@@ -27,6 +27,13 @@ class HelperClass {
         }
     }
 
+    public static String inputString(String message) {
+        System.out.print(message);
+        Scanner scanner = new Scanner(System.in);
+
+        return scanner.nextLine();
+    }
+
     // Generate a random number within a range
     //
     public static int getRandomNumber(int min, int max) {

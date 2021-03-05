@@ -3,35 +3,44 @@ import java.util.List;
 
 public class Character {
     //private String name;
+    private String className;
     private int health;
     private int damage;
-    private int agility;
+    private int agility; //range [0,10] 
     private int defence;
-    //private int haste; //change to attac back when being hit 
+    private int cooldown; //cooldown till next ability can be applied 
     private List<Buff> buffs = new ArrayList<>();
 
 
-    public Character(int health, int damage, int agility, int defence) {
+    public Character(String className, int health, int damage, int agility, int defence) {
+        this.className = className;
         this.health =  health;
         this.damage = damage;
         this.agility =  agility; // range [1-10]
         this.defence =  defence;
+        this.cooldown = 0;
     }
 
     // attack  the victim character and calculate the chance of a miss
     //
     public void attack(Character victimCharacter){
-        int agilityDifferecne = victimCharacter.getAgility() - this.getAgility();
+        victimCharacter.getAttacked(this);
+    }
+
+    public void getAttacked(Character attackCharacter){ //to be overriden for characters with passives
+        Character victimCharacter = this;
+
+        int agilityDifferecne = this.getAgility() - attackCharacter.getAgility();
         int damage;
         double missChance;
 
         System.out.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         if (agilityDifferecne <= 0){ // no change for a miss
-            damage = Math.max(this.getDamage() - victimCharacter.getDefence(), 0);
+            damage = Math.max(attackCharacter.getDamage() - this.getDefence(), 0);
             System.out.println(damage + " damage delt!");
-            System.out.println(victimCharacter.getDefence() + " damage blocked by the victime.");
+            System.out.println(this.getDefence() + " damage blocked by the victime.");
             System.err.println("Attacker had no chance to miss.");
-            System.out.println("New victim's health " + victimCharacter.getHealth() + " ~~> " + Math.max(0, (victimCharacter.getHealth() - damage)));
+            System.out.println("New victim's health " + this.getHealth() + " ~~> " + Math.max(0, (this.getHealth() - damage)));
         }else{
             missChance = 0.05 * agilityDifferecne; // 5% for every point
             double randomNum = Math.random();
@@ -41,18 +50,19 @@ public class Character {
                 System.out.println("Missed!!!");
                 System.out.println("The attacker had "+Math.round(missChance*100) + "% miss chance.");
             }else{
-                damage = Math.max(this.getDamage() - victimCharacter.getDefence(), 0);
+                damage = Math.max(attackCharacter.getDamage() - this.getDefence(), 0);
                 System.out.println(damage + " damage delt!");
-                System.out.println(victimCharacter.getDefence() + " damage blocked by the victime.");
+                System.out.println(this.getDefence() + " damage blocked by the victime.");
                 System.out.println("The attacker had "+Math.round(missChance*100) + "% miss chance.");
-                System.out.println("New victim's health " + victimCharacter.getHealth() + " ~~> " + Math.max(0, (victimCharacter.getHealth() - damage)) );
+                System.out.println("New victim's health " + this.getHealth() + " ~~> " + Math.max(0, (this.getHealth() - damage)) );
             }
         }
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
         victimCharacter.setHealth(victimCharacter.getHealth() - damage);
     }
 
     public void updateBuffs(){
+        this.decrementCooldown();
         for (int i = 0; i < this.getBuffs().size(); i++) {            
             if(this.getBuffs().get(i).getDuration() > 0){
                 System.out.println(this.getBuffs().get(i).getName() + " will last for " + this.getBuffs().get(i).getDuration() + " round/s more.");
@@ -142,7 +152,7 @@ public class Character {
     }
 
     public void setAgility(int newAgility) {
-        this.agility = newAgility;
+        this.agility = Math.max(Math.min(newAgility, 10), 0); //range [0,10]
     }
 
     public int getDefence() {
@@ -166,5 +176,25 @@ public class Character {
 
     public void setBuffs(List<Buff> newBuffs){
         this.buffs = newBuffs;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public String getClassName() {
+        return this.className;
+    }
+
+    public void setCooldown(int cooldown) {
+        this.cooldown = cooldown;
+    }
+
+    public void decrementCooldown() {
+        this.cooldown = Math.max(0, this.cooldown - 1);
+    }
+
+    public int getCooldown() {
+        return this.cooldown;
     }
 }

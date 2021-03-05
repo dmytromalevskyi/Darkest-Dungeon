@@ -48,19 +48,18 @@ public class Game {
             System.out.println("Current tile: "+(this.getCurrentCoordinates()[1]+1)+","+(this.getCurrentCoordinates()[0]+1));
             
             List<Character> playersTeam = new ArrayList<>();    // ALLY
-            playersTeam.add(new Paladin(30, 10, 5, 3));
-            playersTeam.add(new Paladin(20, 12, 6, 0));
-            playersTeam.add(new Paladin(16, 10, 2, 1));
+            playersTeam.add(new Paladin(90, 0.25));
+            playersTeam.add(new Thief(55, 0.1));
+            playersTeam.add(new Preacher(70));
             this.setPlayersTeam(playersTeam);
             
             List<Character> enemies = new ArrayList<>();    // ENEMY
-            enemies.add(new Paladin(12, 10, 5, 3));
-            enemies.add(new Paladin(20, 12, 10, 0));
-            enemies.add(new Paladin(30, 10, 2, 1));
+            enemies.add(new Paladin(80, 0.2));
+            enemies.add(new Thief(50, 0.1));
+            enemies.add(new Preacher(70));           
             this.getCurrentTile().setEnemies(enemies);
 
             this.fight();
-            System.out.println("last line in main function");
         }
         
     }    
@@ -71,25 +70,25 @@ public class Game {
         if (!this.getCurrentTile().areEnemiesPresent()) { // if no enemies
             System.out.println("There are no enemies to fight in this tile.");
             return;
-        } else
-            this.drawFight();
-
+        }
+        
         // if there are enemies in this tile...
         System.out.println("");
         while (this.getCurrentTile().areEnemiesPresent() && !this.isTeamDead()) { // check if enemies or team is dead
 
             // Player's turn
+            System.out.println("<<<<<<<<<<<<<<<<<<<<<<<< Your Turn >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             for (int i = 0; i < this.getPlayersTeam().size(); i++) {
                 Character currentCharacter = this.getPlayersTeam().get(i);
+
+                System.out.println("========== Current Character ("+ currentCharacter.getClassName() +") [" + (i + 1) + "] ==========");
                 if (currentCharacter.hasAnyBuffs()) {
                     System.out.println("");
                     currentCharacter.updateBuffs();
-                    this.drawFight();
                 }
 
-                while (true) { // single character loop
-                    System.out.println("==========Current Character [" + (i + 1) + "]==========");
-
+                this.drawFight();
+                while (true) { // single character loop                    
                     int userInput = HelperClass.inputInt(
                             "Enter a number for what you want to do: [1] Basic attac, [2] Special ability, [3] Skip: ",
                             1, 3);
@@ -123,7 +122,6 @@ public class Game {
                     removeDead();
                     break; // stop asking the used for this character
                 }
-                this.drawFight();
             }
 
             if (this.getCurrentTile().areEnemiesPresent() && !this.isTeamDead()) {
@@ -303,44 +301,47 @@ public class Game {
     public void randomisedAttackForEnemies() {
         List<Character> playersTeam = this.getPlayersTeam();
         List<Character> enemies = this.getCurrentTile().getEnemies();
+        int prcToUseSpecialAbility = 20; // [0, 100] range
 
+        System.out.println("<<<<<<<<<<<<<<<<<<<<<<<< Enemies' Turn >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        
         for (int i = 0; i < enemies.size(); i++) {
             if (this.isTeamDead())
                 return;
-            System.out.println("==========Current Enemy ["+(i+1)+"]==========");
+            
             Character currentEnemy = enemies.get(i);
+            System.out.println("========== Current Enemy ("+ currentEnemy.getClassName() +") ["+(i+1)+"] ==========");            
             if (currentEnemy.hasAnyBuffs()) {
                 System.out.println("");
                 currentEnemy.updateBuffs();
-                this.drawFight();
             }
+            this.drawFight();
+            HelperClass.inputString("Press enter to continue: ");
+            /*try {
+                TimeUnit.SECONDS.sleep(6);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }*/
             
             int randomNum = HelperClass.getRandomNumber(1, 100);
-            if (randomNum <= 70){ // Attac a team character
+            if (randomNum <= (100 - prcToUseSpecialAbility)){ // Attac a team character
                 int playerToAttack = HelperClass.getRandomNumber(0, playersTeam.size()-1);
-                System.out.println("Attacking Character ["+(playerToAttack+1)+"]");
+                System.out.println("Attacking Character ["+(playerToAttack+1)+"] ("+ playersTeam.get(playerToAttack).getClassName() +")");
                 currentEnemy.attack(playersTeam.get(playerToAttack));
             }else{ // Use special ability
                 if (currentEnemy.getIsAbilityFriendly()){ // if true use on a random enemy
                     int enemyToCastAbilityOn = HelperClass.getRandomNumber(0, enemies.size()-1);
-                    System.out.println("Using "+ currentEnemy.getAbilityName() +" on Enemy ["+(enemyToCastAbilityOn+1)+"]");
+                    System.out.println("Using "+ currentEnemy.getAbilityName() +" on Enemy ["+(enemyToCastAbilityOn+1)+"] ("+ enemies.get(enemyToCastAbilityOn).getClassName() +")");
                     currentEnemy.useAbility(enemies.get(enemyToCastAbilityOn));
                 }else{ // use on a team character
                     int charToCastAbilityOn = HelperClass.getRandomNumber(0, playersTeam.size()-1);
-                    System.out.println("Using "+ currentEnemy.getAbilityName() +" on Character ["+(charToCastAbilityOn+1)+"]");
+                    System.out.println("Using "+ currentEnemy.getAbilityName() +" on Character ["+(charToCastAbilityOn+1)+"] ("+ playersTeam.get(charToCastAbilityOn).getClassName() +")");
                     currentEnemy.useAbility(playersTeam.get(charToCastAbilityOn));
                 }
                     
             }
 
             removeDead();
-            this.drawFight();
-            
-            try {
-                TimeUnit.SECONDS.sleep(6);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
         
     }
