@@ -1,5 +1,5 @@
-Student name:
-Student number:
+Student name: Dmytro Malevskyi
+Student number: 200505813
 
 Now complete the statements below for each level you wish to be marked. Replace all text in square brackets.
 
