@@ -18,14 +18,14 @@ final public class Preacher extends Character{             // Support character
     public Buff makeBuff() {
         // Paramiters
         double prc = 0.2;
-        int damageAffect =  (int) (this.getHealth() * prc);
+        int damageEffect =  (int) (this.getHealth() * prc);
         int duration = 1;
         boolean isFriendly = true;
 
         // Create the buff that is to be applied
         Buff preachertBuff = new Buff("The Voices of Prayers", 
-        "Adds "+(prc*100)+"% of this character's health to the damage of the chosen character for "+duration+" round/s. Additional damage works out to be "+ damageAffect+".",
-        0, damageAffect, 0, 0, duration, isFriendly);
+        "Adds "+(prc*100)+"% of this character's health to the damage of the chosen character for "+duration+" round/s. Additional damage works out to be "+ damageEffect+".",
+        0, damageEffect, 0, 0, duration, isFriendly);
 
         return preachertBuff;
     }

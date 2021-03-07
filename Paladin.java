@@ -16,8 +16,7 @@ final public class Paladin extends Character{         //Strong tank character
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         }else{ // Take damage
             super.getAttacked(attackCharacter);
-        }
-            
+        }    
     }
 
     // Give the buff for a given character
@@ -33,14 +32,14 @@ final public class Paladin extends Character{         //Strong tank character
     public Buff makeBuff() {
         // Paramiters
         double prc = 0.1;
-        int defenceAffect =  (int) (this.getHealth() * prc);
+        int defenceEffect =  (int) (this.getHealth() * prc);
         int duration = 4;
         boolean isFriendly = true;
 
         // Create the buff that is to be applied
         Buff paladinBuff = new Buff("The Blessing of The King", 
-        "Adds "+(prc*100)+"% of this character's health to defence of the chosen character for "+duration+" round/s. Defence buff works out to be "+ defenceAffect+".", 
-        0, 0, 0, defenceAffect, duration, isFriendly);
+        "Adds "+(prc*100)+"% of this character's health to defence of the chosen character for "+duration+" round/s. Defence buff works out to be "+ defenceEffect+".", 
+        0, 0, 0, defenceEffect, duration, isFriendly);
 
         return paladinBuff;
     }

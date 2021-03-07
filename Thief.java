@@ -33,14 +33,14 @@ final public class Thief extends Character{             // Light and fast damage
     public Buff makeBuff() {
         // Paramiters
         double prc = 0.3;
-        int agilityAffect =  (int) (this.getAgility() * prc);
+        int agilityEffect =  (int) (this.getAgility() * prc);
         int duration = 3;
         boolean isFriendly = true;
 
         // Create the buff that is to be applied
         Buff paladinBuff = new Buff("Thief's Dance", 
-        "Adds "+(prc*100)+"% of this character's agility to agility of the chosen character for "+duration+" round/s. Agility buff works out to be "+ agilityAffect +".", 
-        0, 0, agilityAffect, 0, duration, isFriendly);
+        "Adds "+(prc*100)+"% of this character's agility to agility of the chosen character for "+duration+" round/s. Agility buff works out to be "+ agilityEffect +".", 
+        0, 0, agilityEffect, 0, duration, isFriendly);
 
         return paladinBuff;
     }

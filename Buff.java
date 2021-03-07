@@ -4,21 +4,21 @@ public class Buff {
     private String name;
     private String description;
     // Atributes affected
-    private int healthAffect;
-    private int damageAffect;
-    private int agilityAffect;
-    private int defenceAffect; 
+    private int healthEffect;
+    private int damageEffect;
+    private int agilityEffect;
+    private int defenceEffect; 
     private int duration;   // (rounds)
     private boolean isFriendly; // determines if you want to use it on your allis
 
-    public Buff(String name, String description, int healthAffect,int damageAffect,
-    int agilityAffect,int defenceAffect,int duration, boolean isFriendly){
+    public Buff(String name, String description, int healthEffect,int damageEffect,
+    int agilityEffect,int defenceEffect,int duration, boolean isFriendly){
         this.name = name;
         this.description = description;
-        this.healthAffect = healthAffect;
-        this.damageAffect =  damageAffect;
-        this.agilityAffect = agilityAffect;
-        this.defenceAffect = defenceAffect; 
+        this.healthEffect = healthEffect;
+        this.damageEffect =  damageEffect;
+        this.agilityEffect = agilityEffect;
+        this.defenceEffect = defenceEffect; 
         this.duration = duration;
         this.isFriendly = isFriendly;
     }
@@ -37,20 +37,20 @@ public class Buff {
         return this.duration;
     }
 
-    public int getDefenceAffect(){
-        return this.defenceAffect;
+    public int getDefenceEffect(){
+        return this.defenceEffect;
     }
     
-    public int getAgilityAffect(){
-        return this.agilityAffect;
+    public int getAgilityEffect(){
+        return this.agilityEffect;
     }
     
-    public int getDamageAffect(){
-        return this.damageAffect;
+    public int getDamageEffect(){
+        return this.damageEffect;
     }
 
-    public int getHealthAffect(){
-        return this.healthAffect;
+    public int getHealthEffect(){
+        return this.healthEffect;
     }
 
     public void setName(String name){

@@ -39,7 +39,7 @@ public class Character {
             damage = Math.max(attackCharacter.getDamage() - this.getDefence(), 0);
             System.out.println(damage + " damage delt!");
             System.out.println(this.getDefence() + " damage blocked by the victime.");
-            System.err.println("Attacker had no chance to miss.");
+            System.out.println("Attacker had no chance to miss.");
             System.out.println("New victim's health " + this.getHealth() + " ~~> " + Math.max(0, (this.getHealth() - damage)));
         }else{
             missChance = 0.05 * agilityDifferecne; // 5% for every point
@@ -62,7 +62,6 @@ public class Character {
     }
 
     public void updateBuffs(){
-        this.decrementCooldown();
         for (int i = 0; i < this.getBuffs().size(); i++) {            
             if(this.getBuffs().get(i).getDuration() > 0){
                 System.out.println(this.getBuffs().get(i).getName() + " will last for " + this.getBuffs().get(i).getDuration() + " round/s more.");
@@ -116,9 +115,9 @@ public class Character {
 
         int healthAfterBuffs = this.health;
         for (int i = 0; i < this.getBuffs().size(); i++) { // has buffs
-            healthAfterBuffs += this.getBuffs().get(i).getHealthAffect();
+            healthAfterBuffs += this.getBuffs().get(i).getHealthEffect();
         }
-        return healthAfterBuffs;
+        return Math.max(0, healthAfterBuffs);
     }
 
     public void setHealth(int newHealth) {
@@ -131,13 +130,13 @@ public class Character {
 
         int damageAfterBuffs = this.damage;
         for (int i = 0; i < this.getBuffs().size(); i++) { // has buffs
-            damageAfterBuffs += this.getBuffs().get(i).getDamageAffect();
+            damageAfterBuffs += this.getBuffs().get(i).getDamageEffect();
         }
-        return damageAfterBuffs;
+        return Math.max(0, damageAfterBuffs);
     }
 
     public void setDamage(int newDamage) {
-        this.damage = newDamage;
+        this.damage = Math.max(0, newDamage);
     }
 
     public int getAgility() {
@@ -146,9 +145,9 @@ public class Character {
 
         int agilityAfterBuffs = this.agility;
         for (int i = 0; i < this.getBuffs().size(); i++) { // has buffs
-            agilityAfterBuffs += this.getBuffs().get(i).getAgilityAffect();
+            agilityAfterBuffs += this.getBuffs().get(i).getAgilityEffect();
         }
-        return agilityAfterBuffs;
+        return Math.max(Math.min(agilityAfterBuffs, 10), 0); //range [0,10]
     }
 
     public void setAgility(int newAgility) {
@@ -161,13 +160,13 @@ public class Character {
 
         int degenceAfterBuffs = this.defence;
         for (int i = 0; i < this.getBuffs().size(); i++) { // has buffs
-            degenceAfterBuffs += this.getBuffs().get(i).getDefenceAffect();
+            degenceAfterBuffs += this.getBuffs().get(i).getDefenceEffect();
         }
-        return degenceAfterBuffs;
+        return Math.max(0, degenceAfterBuffs);
     }
 
     public void setDefence(int newDefence) {
-        this.defence = newDefence;
+        this.defence = Math.max(0, newDefence);
     }
     
     public List<Buff> getBuffs(){
@@ -196,5 +195,9 @@ public class Character {
 
     public int getCooldown() {
         return this.cooldown;
+    }
+
+    public boolean isCooldownZero(){
+        return (this.getCooldown() <= 0);
     }
 }
