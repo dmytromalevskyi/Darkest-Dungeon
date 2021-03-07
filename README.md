@@ -69,11 +69,11 @@ Defence	11	9	3		12	0	3
 ------------------------------------------------------------
 
 Enter a number for what you want to do: [1] Basic attack, [2] Special ability, [3] Open Inventory, [4] Skip: 1
-Enter a number for the enemy you want to attac (0 to cancel): 2
+Enter a number for the enemy you want to attack (0 to cancel): 2
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 20 damage delt!
-0 damage blocked by the victime.
+0 damage blocked by the victim.
 Attacker had no chance to miss.
 New victim's health 55 ~~> 35
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
