@@ -1,11 +1,11 @@
 # Darkest-Dungeon
-Oversimplified copy of the game Darkest Dungeon that was written for my university course to learn about OOP and polymorphism. It is a turn base game where the player needs to explore the map and fight off enemies to get to the end of the dungeon. The game can be enjoyed in a terminal but a really simple GUI is on the way.
+Oversimplified version of the game Darkest Dungeon that was written for my university course to learn about OOP and polymorphism. It is a turn base game where the player needs to explore the map and fight off enemies to get to the end of the dungeon. The game can be enjoyed on a terminal but a really simple GUI is on the way.
 
 Features
 -------------------------
 * 3 different classes each with a unique ability
 * Most classes have a unique passive ability
-* Inventory with items that give permanent and time-limited effect (4 items currently in the game)
+* Inventory with items that give permanent or time limited effect (4 items currently in the game)
 
 
 In development
