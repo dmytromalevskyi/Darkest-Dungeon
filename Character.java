@@ -38,7 +38,7 @@ public class Character {
         if (agilityDifferecne <= 0){ // no change for a miss
             damage = Math.max(attackCharacter.getDamage() - this.getDefence(), 0);
             System.out.println(damage + " damage delt!");
-            System.out.println(this.getDefence() + " damage blocked by the victime.");
+            System.out.println(this.getDefence() + " damage blocked by the victim.");
             System.out.println("Attacker had no chance to miss.");
             System.out.println("New victim's health " + this.getHealth() + " ~~> " + Math.max(0, (this.getHealth() - damage)));
         }else{
