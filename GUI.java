@@ -2,6 +2,8 @@ import java.awt.Color;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -11,6 +13,7 @@ import javax.swing.JTextArea;
 import javax.swing.ToolTipManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 final public class GUI extends JFrame implements ActionListener{
     Game game;
@@ -43,28 +46,10 @@ final public class GUI extends JFrame implements ActionListener{
 
         JPanel fightJPanel = new JPanel(); // CENTER PANEL - FIGHT PANEL
         fightJPanel.setLayout(new GridLayout(1,2,10,10)); 
-        
         playersTeamJPanel.setBackground(Color.BLUE);
         fightJPanel.add(playersTeamJPanel);
         currentEnemiesJPanel.setBackground(Color.GRAY);
         fightJPanel.add(currentEnemiesJPanel);
-
-        ///---------------------------------------------------------//
-        String character1 = "Paladin";
-        JLabel label1 = new JLabel();
-        ImageIcon icon1 = new ImageIcon("Graphics/"+character1+".png");
-        label1.setText("Graphics/"+character1+".png");
-        label1.setIcon(icon1);
-        playersTeamJPanel.add(label1);
-
-        String character2 = "Paladin";
-        JLabel label2 = new JLabel();
-        ImageIcon icon2 = new ImageIcon("Graphics/"+character2+".png");
-        label1.setText("Graphics/"+character2+".png");
-        label1.setIcon(icon2);
-        playersTeamJPanel.add(label2);
-        ///---------------------------------------------------------//
-
 
         JPanel southJPanel = new JPanel(); // SOUTH PANEL
         southJPanel.setLayout(new GridLayout(1,4,5,5));
@@ -75,8 +60,9 @@ final public class GUI extends JFrame implements ActionListener{
         
 
         JButton attackButton = new JButton("Attack"); // ABILITY PANEL
-        useAbilityButton = new JButton("Ability");
-        JButton skipButton = new JButton("Skip");
+        attackButton.setFocusable(false);
+        useAbilityButton = new JButton("Ability"); useAbilityButton.setFocusable(false);
+        JButton skipButton = new JButton("Skip"); skipButton.setFocusable(false);
         abilitiesJPanel.setLayout(new GridLayout(3,1,1,1));
         abilitiesJPanel.add(attackButton);
         abilitiesJPanel.add(useAbilityButton);
@@ -85,49 +71,76 @@ final public class GUI extends JFrame implements ActionListener{
 
 
         statsJPanel.setLayout(new GridLayout(1,1)); // STATS PANEL
-        statsTextArea = new JTextArea("Health: 90\nDamage: 6\nAgility: 1\nDefence: 11");
+
+        add(fightJPanel, BorderLayout.CENTER);
+        add(southJPanel, BorderLayout.SOUTH);
+
+        // Adding enemies
+        List<Character> enemies = new ArrayList<>();    // ENEMY
+        enemies.add(new Paladin(100, 0.2));
+        enemies.add(new Thief(55, 0.15));
+        enemies.add(new Preacher(70));           
+        game.getMap().getCurrentTile().setEnemies(enemies);
+
+        setVisible(true);
+        ///pack();
+        update();
+        Scanner scanner = new Scanner(System.in);
+        scanner.next();
+        game.getPlayersTeam().remove(0);
+        selectedCharacter = game.getPlayersTeam().get(1);
+        update();
+        update();
+    }
+
+    public void update() {
+        updateFightPanel(); // update fight panel
+        //updateAblilityPanel(); // update ability panel
+        updateStatsPanel();
+        // update invintory panel
+        // update map panel
+    }
+
+    public void updateStatsPanel() {
+        statsJPanel.removeAll();
+
+        if (selectedCharacter == null){
+            statsTextArea = new JTextArea("No character is selected.");
+        } else {
+            statsTextArea = new JTextArea(selectedCharacter.toString());
+        }
+
         statsTextArea.setEditable(false);
         statsTextArea.setLineWrap(true);
         statsTextArea.setOpaque(false);
         statsTextArea.setWrapStyleWord(false);
         statsJPanel.add(statsTextArea);
 
-        add(fightJPanel, BorderLayout.CENTER);
-        add(southJPanel, BorderLayout.SOUTH);
-
-        //JLabel lable = new JLabel();
-        //lable.setText("This is where the text goes!");
-        //add(lable);
-
-        setVisible(true);
-        ///pack();
-    }
-
-    public void update() {
-        updateFightPanel(); // update fight panel
-        //updateAblilityPanel(); // update ability panel
-        // update stats panel
-        // update invintory panel
-        // update map panel
     }
 
     public void updateFightPanel(){
         List<Character> playersTeam = game.getPlayersTeam();
         List<Character> enemies = game.getMap().getCurrentEnemies();
 
-        playersTeamJPanel.setLayout(new GridLayout(1,playersTeam.size(),10,10)); // playersTeam PANEL
-
-        for (int i = playersTeam.size(); i > 0; i--) {
+        playersTeamJPanel.removeAll();
+        playersTeamJPanel.setLayout(new GridLayout(1,playersTeam.size(),10,10)); // playersTeam PANEL      
+        System.out.println(playersTeam.size());
+        for (int i = 0; i < playersTeam.size(); i++) {
             Character character = game.getPlayersTeam().get(i);
-            JLabel label = new JLabel();
-            ImageIcon icon = new ImageIcon("Graphics/"+character.getClassName()+".png");
+            JLabel characterLabel = new JLabel(convertToMultiline(character.toString()));
 
-            label.setText("Graphics/"+character.getClassName()+".png");
-            label.setIcon(icon);
-            playersTeamJPanel.add(label);
+            playersTeamJPanel.add(characterLabel);
         }
 
-        currentEnemiesJPanel.setLayout(new GridLayout(1,enemies.size(),10,10)); // currentEnemies PANEL
+        currentEnemiesJPanel.removeAll();
+        currentEnemiesJPanel.setLayout(new GridLayout(1,enemies.size(),10,10)); // currentEnemies PANEL     
+        System.out.println(enemies.size());
+        for (int i = 0; i < enemies.size(); i++) {
+            Character character = game.getMap().getCurrentEnemies().get(i);
+            JLabel characterLabel = new JLabel(convertToMultiline(character.toString()));
+
+            currentEnemiesJPanel.add(characterLabel);
+        }
     }
 
     public void updateAblilityPanel(){
@@ -145,5 +158,9 @@ final public class GUI extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
               
+    }
+
+    public static String convertToMultiline(String orig){
+        return "<html>" + orig.replaceAll("\n", "<br>");
     }
 }

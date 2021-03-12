@@ -17,7 +17,7 @@ final public class Game {
         if (inputString.equals("-g")){
             System.out.println("Starting graphical user interface...");
             GUI gui = new GUI(10);
-            gui.update();
+            //gui.update();
         }else if (inputString.equals("-l")){
             CLI cli = new CLI(10);
             cli.play();
@@ -32,6 +32,13 @@ final public class Game {
 
     public Game(int sizeOfTheMap) {
         this.map = new Map(sizeOfTheMap);
+
+        List<Character> playersTeam = new ArrayList<>();    // ALLY
+        playersTeam.add(new Paladin(90, 0.25));
+        playersTeam.add(new Thief(60, 0.15));
+        playersTeam.add(new Preacher(60));
+        setPlayersTeam(playersTeam);
+
         createInventory();
     }
     

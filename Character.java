@@ -75,6 +75,18 @@ public class Character {
         }
     }
 
+    // Get stats of the character
+    //
+    public String toString() {
+        String output = "";
+        output += "Class: " + getClassName() + "\n";
+        output += "Health: " + getHealth() + "\n";
+        output += "Damage: " + getDamage() + "\n";
+        output += "Agility: " + getAgility() + "\n";
+        output += "Defence: " + getDefence();
+        return output;
+    }
+
     // Check if the character has any buffs
     //
     public boolean hasAnyBuffs(){

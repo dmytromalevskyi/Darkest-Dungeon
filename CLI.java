@@ -11,19 +11,13 @@ final public class CLI{
 
     public void play() {
         if (true) {
-            //map.draw();
+            //game.getMap().draw();
             //System.out.println("Current tile: "+(map.getCurrentCoordinates()[1]+1)+","+(map.getCurrentCoordinates()[0]+1));
             //this.fight();
 
             //map.move(new byte[] {1,1});
             //map.draw();
             //System.out.println("Current tile: "+(map.getCurrentCoordinates()[1]+1)+","+(map.getCurrentCoordinates()[0]+1));
-            
-            List<Character> playersTeam = new ArrayList<>();    // ALLY
-            playersTeam.add(new Paladin(90, 0.25));
-            playersTeam.add(new Thief(60, 0.15));
-            playersTeam.add(new Preacher(60));
-            game.setPlayersTeam(playersTeam);
             
             List<Character> enemies = new ArrayList<>();    // ENEMY
             enemies.add(new Paladin(100, 0.2));
