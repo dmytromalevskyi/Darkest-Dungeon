@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.ToolTipManager;
@@ -17,8 +18,9 @@ import java.util.Scanner;
 
 final public class GUI extends JFrame implements ActionListener{
     Game game;
+    int selectedCharacterIndex = 0;
     Character selectedCharacter;
-    int selectedCharacterIndex;
+
 
     // Panels
     JPanel fightJPanel = new JPanel();
@@ -33,6 +35,7 @@ final public class GUI extends JFrame implements ActionListener{
 
     public GUI(int sizeOfTheMap){
         this.game = new Game(sizeOfTheMap);
+        selectedCharacter = game.getPlayersTeam().get(selectedCharacterIndex);
         setTitle("Game");
         setSize(1000,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -61,14 +64,13 @@ final public class GUI extends JFrame implements ActionListener{
         
 
         JButton attackButton = new JButton("Attack"); // ABILITY PANEL
-        attackButton.setFocusable(false);
-        useAbilityButton = new JButton("Ability"); useAbilityButton.setFocusable(false);
-        JButton skipButton = new JButton("Skip"); skipButton.setFocusable(false);
+        attackButton.setFocusable(false); attackButton.addActionListener(this);
+        useAbilityButton = new JButton("Ability"); useAbilityButton.setFocusable(false); useAbilityButton.addActionListener(this);
+        JButton skipButton = new JButton("Skip"); skipButton.setFocusable(false); skipButton.addActionListener(this);
         abilitiesJPanel.setLayout(new GridLayout(3,1,1,1));
         abilitiesJPanel.add(attackButton);
         abilitiesJPanel.add(useAbilityButton);
         abilitiesJPanel.add(skipButton);
-        useAbilityButton.setToolTipText("Cooldown: 0");
 
 
         statsJPanel.setLayout(new GridLayout(1,1)); // STATS PANEL
@@ -93,7 +95,7 @@ final public class GUI extends JFrame implements ActionListener{
         ///pack();
         update();
 
-        fight();
+        //fight();
         
         update();
     }
@@ -111,6 +113,8 @@ final public class GUI extends JFrame implements ActionListener{
     }
 
     public void fight(){
+        
+        /*
         // Player's team
         for (int i = 0; i < game.getPlayersTeam().size(); i++) {
             selectedCharacterIndex = i;
@@ -122,6 +126,7 @@ final public class GUI extends JFrame implements ActionListener{
             // some fight
             HelperClass.inputString("Player's fight loop for index: "+i);
         }
+        */
     }
 
     public void updateInvintoryPanel(){
@@ -137,6 +142,7 @@ final public class GUI extends JFrame implements ActionListener{
             itemButton.setText(item.getName()+" ("+ item.getNumberOf() +")");
             itemButton.setToolTipText(item.getDescription());
             itemButton.setFocusable(false);
+            itemButton.addActionListener(this);
 
             inventoryJPanel.add(itemButton);
         }
@@ -190,7 +196,45 @@ final public class GUI extends JFrame implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-              
+        if (e.getSource() instanceof JButton){ // Buttons
+            System.out.println("A button pressed: "+ e.getActionCommand());
+            
+            //JOptionPane.showMessageDialog(this, "Enter a valid Number","Name of frame", JOptionPane.PLAIN_MESSAGE);
+            // TODO add radio buttons to dialog window to apply stuff to team/enemies
+
+            String buttonActionCommand = e.getActionCommand(); // ABILITY panel buttons
+            if (buttonActionCommand.equals("Attack")){
+                iterateSelectedCharacter();
+            } else if (buttonActionCommand.equals("Ability")){
+                iterateSelectedCharacter();
+            } else if (buttonActionCommand.equals("Skip")){
+                iterateSelectedCharacter();
+            }else if (buttonActionCommand.contains("Item: ")){
+                System.out.print("Inventory item used. ");
+                int indexOfItem = Integer.parseInt(buttonActionCommand.replace("Item: ", ""));
+                System.out.println("Index is: "+ indexOfItem);
+            } else { // OTHER buttons
+                System.out.println("The button is not handled in actionPerformed function.");
+            }
+        }else{
+
+        }
+    }
+
+    public void setSelectedCharacterToFirst(){
+        selectedCharacterIndex = 0;
+        selectedCharacter = game.getPlayersTeam().get(selectedCharacterIndex);
+        updateStatsPanel();
+    }
+
+    public void iterateSelectedCharacter(){
+        if(selectedCharacterIndex >= game.getPlayersTeam().size()-1)
+            selectedCharacterIndex = 0;
+        else
+            selectedCharacterIndex++;
+        
+        selectedCharacter = game.getPlayersTeam().get(selectedCharacterIndex);
+        updateStatsPanel();
     }
 
     public static String convertToMultiline(String orig){
