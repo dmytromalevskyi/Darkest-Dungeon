@@ -18,6 +18,7 @@ import java.util.Scanner;
 final public class GUI extends JFrame implements ActionListener{
     Game game;
     Character selectedCharacter;
+    int selectedCharacterIndex;
 
     // Panels
     JPanel fightJPanel = new JPanel();
@@ -26,7 +27,7 @@ final public class GUI extends JFrame implements ActionListener{
     JPanel abilitiesJPanel = new JPanel();
         JButton useAbilityButton;
     JPanel statsJPanel = new JPanel();
-        JTextArea statsTextArea;
+        JTextArea statsTextArea = new JTextArea();
     JPanel inventoryJPanel = new JPanel();
     JPanel mapJPanel = new JPanel();
 
@@ -71,6 +72,12 @@ final public class GUI extends JFrame implements ActionListener{
 
 
         statsJPanel.setLayout(new GridLayout(1,1)); // STATS PANEL
+        statsJPanel.add(statsTextArea);
+        statsTextArea.setEditable(false);
+        statsTextArea.setLineWrap(true);
+        statsTextArea.setOpaque(false);
+        statsTextArea.setWrapStyleWord(false);
+
 
         add(fightJPanel, BorderLayout.CENTER);
         add(southJPanel, BorderLayout.SOUTH);
@@ -85,37 +92,62 @@ final public class GUI extends JFrame implements ActionListener{
         setVisible(true);
         ///pack();
         update();
-        Scanner scanner = new Scanner(System.in);
-        scanner.next();
-        game.getPlayersTeam().remove(0);
-        selectedCharacter = game.getPlayersTeam().get(1);
-        update();
+
+        fight();
+        
         update();
     }
 
     public void update() {
         updateFightPanel(); // update fight panel
-        //updateAblilityPanel(); // update ability panel
-        updateStatsPanel();
-        // update invintory panel
+        updateAblilityPanel(); // update ability panel
+        updateStatsPanel(); //update display of stats of the selected char.
+        updateInvintoryPanel(); // update invintory panel
         // update map panel
+        
+        //change the length of the frame to refresh it (a bug that makes some elements not visible)
+        this.setSize(getWidth()-1, getHeight()-1);
+        this.setSize(getWidth()+1, getHeight()+1);
+    }
+
+    public void fight(){
+        // Player's team
+        for (int i = 0; i < game.getPlayersTeam().size(); i++) {
+            selectedCharacterIndex = i;
+            selectedCharacter = game.getPlayersTeam().get(selectedCharacterIndex);
+            if (i == 1)
+                selectedCharacter.setCooldown(3);
+            update();
+    
+            // some fight
+            HelperClass.inputString("Player's fight loop for index: "+i);
+        }
+    }
+
+    public void updateInvintoryPanel(){
+        List<Item> invintory = game.getInventory();
+
+        inventoryJPanel.removeAll();
+        inventoryJPanel.setLayout(new GridLayout(2,2,10,10)); // playersTeam PANEL      
+        for (int i = 0; i < invintory.size(); i++) {
+            Item item = invintory.get(i);
+            JButton itemButton = new  JButton();
+
+            itemButton.setActionCommand("Item: "+i); //use to identify that item is used what is its index
+            itemButton.setText(item.getName()+" ("+ item.getNumberOf() +")");
+            itemButton.setToolTipText(item.getDescription());
+            itemButton.setFocusable(false);
+
+            inventoryJPanel.add(itemButton);
+        }
     }
 
     public void updateStatsPanel() {
-        statsJPanel.removeAll();
-
         if (selectedCharacter == null){
-            statsTextArea = new JTextArea("No character is selected.");
+            statsTextArea.setText("No character is selected.");
         } else {
-            statsTextArea = new JTextArea(selectedCharacter.toString());
+            statsTextArea.setText(selectedCharacter.toString());
         }
-
-        statsTextArea.setEditable(false);
-        statsTextArea.setLineWrap(true);
-        statsTextArea.setOpaque(false);
-        statsTextArea.setWrapStyleWord(false);
-        statsJPanel.add(statsTextArea);
-
     }
 
     public void updateFightPanel(){
@@ -124,7 +156,6 @@ final public class GUI extends JFrame implements ActionListener{
 
         playersTeamJPanel.removeAll();
         playersTeamJPanel.setLayout(new GridLayout(1,playersTeam.size(),10,10)); // playersTeam PANEL      
-        System.out.println(playersTeam.size());
         for (int i = 0; i < playersTeam.size(); i++) {
             Character character = game.getPlayersTeam().get(i);
             JLabel characterLabel = new JLabel(convertToMultiline(character.toString()));
@@ -134,7 +165,6 @@ final public class GUI extends JFrame implements ActionListener{
 
         currentEnemiesJPanel.removeAll();
         currentEnemiesJPanel.setLayout(new GridLayout(1,enemies.size(),10,10)); // currentEnemies PANEL     
-        System.out.println(enemies.size());
         for (int i = 0; i < enemies.size(); i++) {
             Character character = game.getMap().getCurrentEnemies().get(i);
             JLabel characterLabel = new JLabel(convertToMultiline(character.toString()));
@@ -145,13 +175,16 @@ final public class GUI extends JFrame implements ActionListener{
 
     public void updateAblilityPanel(){
         // disable the ability button if on cooldown
-        /*if(game.getSelectedCharacter().isCooldownZero()){
+        if(selectedCharacter == null){
+            useAbilityButton.setEnabled(false);
+            useAbilityButton.setToolTipText("No character is selected.");
+        }else if(selectedCharacter.isCooldownZero()){
             useAbilityButton.setEnabled(true);
+            useAbilityButton.setToolTipText(null);
         }else{
             useAbilityButton.setEnabled(false);
-            // TODO: add a comment for mouse hover
+            useAbilityButton.setToolTipText("Cooldown: "+selectedCharacter.getCooldown());
         }
-        */
 
     }
 

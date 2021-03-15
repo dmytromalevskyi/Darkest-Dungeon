@@ -6,18 +6,19 @@ final public class Thief extends Character{             // Light and fast damage
         this.chanceToAttackBack = Math.min(chanceToAttackBack, 1D);
     }
 
-    public void getAttacked(Character attackCharacter){ // for characters with passives
-        super.getAttacked(attackCharacter);
+    public String getAttacked(Character attackCharacter){ // for characters with passives
+        String output = super.getAttacked(attackCharacter);
         
         double randomNum = Math.random();
         if (randomNum <= this.getChanceToAttackBack()){ // Attack back
-            System.out.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-            System.out.println("Attacks back!!!");
-            System.out.println("The thief had "+Math.round(this.getChanceToAttackBack()*100) + "% attach-back chance.");    
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            output += ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            output += ("Attacks back!!!\n");
+            output += ("The thief had "+Math.round(this.getChanceToAttackBack()*100) + "% attach-back chance.\n");    
+            output += ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
-            this.attack(attackCharacter);
-        }            
+            output += this.attack(attackCharacter);
+        }
+        return output;          
     }
 
     // Give the buff for a given character

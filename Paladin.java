@@ -6,16 +6,18 @@ final public class Paladin extends Character{         //Strong tank character
         this.chanceToBlock = Math.min(chanceToBlock, 1D);
     }
 
-    public void getAttacked(Character attackCharacter){ // for characters with passives
+    public String getAttacked(Character attackCharacter){ // for characters with passives
         double randomNum = Math.random();
 
         if (randomNum <= this.getChanceToBlock()){ // Blocked the attack fully
-            System.out.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-            System.out.println("Fully blocked!!!");
-            System.out.println("The paladin had "+Math.round(this.getChanceToBlock()*100) + "% block chance.");    
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            String output = "";
+            output += ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            output += ("Fully blocked!!!\n");
+            output += ("The paladin had "+Math.round(this.getChanceToBlock()*100) + "% block chance.\n");    
+            output += ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            return output;
         }else{ // Take damage
-            super.getAttacked(attackCharacter);
+            return super.getAttacked(attackCharacter);
         }    
     }
 

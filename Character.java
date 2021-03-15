@@ -23,56 +23,60 @@ public class Character {
 
     // attack  the victim character and calculate the chance of a miss
     //
-    public void attack(Character victimCharacter){
-        victimCharacter.getAttacked(this);
+    public String attack(Character victimCharacter){
+        return victimCharacter.getAttacked(this);
     }
 
-    public void getAttacked(Character attackCharacter){ //to be overriden for characters with passives
+    public String getAttacked(Character attackCharacter){ //to be overriden for characters with passives
         Character victimCharacter = this;
+        String output = "";
 
         int agilityDifferecne = this.getAgility() - attackCharacter.getAgility();
         int damage;
         double missChance;
 
-        System.out.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        output += "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
         if (agilityDifferecne <= 0){ // no change for a miss
             damage = Math.max(attackCharacter.getDamage() - this.getDefence(), 0);
-            System.out.println(damage + " damage delt!");
-            System.out.println(this.getDefence() + " damage blocked by the victim.");
-            System.out.println("Attacker had no chance to miss.");
-            System.out.println("New victim's health " + this.getHealth() + " ~~> " + Math.max(0, (this.getHealth() - damage)));
+            output += (damage + " damage delt!\n");
+            output += (this.getDefence() + " damage blocked by the victim.\n");
+            output += ("Attacker had no chance to miss.\n");
+            output += ("New victim's health " + this.getHealth() + " ~~> " + Math.max(0, (this.getHealth() - damage)) + "\n");
         }else{
             missChance = 0.05 * agilityDifferecne; // 5% for every point
             double randomNum = Math.random();
 
             if (randomNum <= missChance){ // missed
                 damage = 0;
-                System.out.println("Missed!!!");
-                System.out.println("The attacker had "+Math.round(missChance*100) + "% miss chance.");
+                output += ("Missed!!!\n");
+                output += ("The attacker had "+Math.round(missChance*100) + "% miss chance.\n");
             }else{
                 damage = Math.max(attackCharacter.getDamage() - this.getDefence(), 0);
-                System.out.println(damage + " damage delt!");
-                System.out.println(this.getDefence() + " damage blocked by the victime.");
-                System.out.println("The attacker had "+Math.round(missChance*100) + "% miss chance.");
-                System.out.println("New victim's health " + this.getHealth() + " ~~> " + Math.max(0, (this.getHealth() - damage)) );
+                output += (damage + " damage delt!\n");
+                output += (this.getDefence() + " damage blocked by the victime.\n");
+                output += ("The attacker had "+Math.round(missChance*100) + "% miss chance.\n");
+                output += ("New victim's health " + this.getHealth() + " ~~> " + Math.max(0, (this.getHealth() - damage)) + "\n");
             }
         }
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+        output += ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
         victimCharacter.setHealth(victimCharacter.getHealth() - damage);
+        return output;
     }
 
-    public void updateBuffs(){
+    public String updateBuffs(){
+        String output = "";
         for (int i = 0; i < this.getBuffs().size(); i++) {            
             if(this.getBuffs().get(i).getDuration() > 0){
-                System.out.println(this.getBuffs().get(i).getName() + " will last for " + this.getBuffs().get(i).getDuration() + " round/s more.");
+                output += (this.getBuffs().get(i).getName() + " will last for " + this.getBuffs().get(i).getDuration() + " round/s more.\n");
                 // Decrement each buffs' duration
                 this.getBuffs().get(i).decrementDuration();
             }else{ // Remove buffs that are expired
-                System.out.println(this.getBuffs().get(i).getName() + " has just finished.");
+                output += (this.getBuffs().get(i).getName() + " has just finished.\n");
                 this.getBuffs().remove(i);
                 i--;
             }
         }
+        return output;
     }
 
     // Get stats of the character

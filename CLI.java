@@ -51,7 +51,7 @@ final public class CLI{
                 currentCharacter.decrementCooldown();
                 if (currentCharacter.hasAnyBuffs()) {
                     System.out.println("");
-                    currentCharacter.updateBuffs();
+                    System.out.println(currentCharacter.updateBuffs());
                 }
 
                 drawFight();
@@ -64,7 +64,7 @@ final public class CLI{
                     if (userInput == 1) { // basic attack
                         userInput = HelperClass.inputInt("Enter a number for the enemy you want to attack (0 to cancel): ", 0, game.getMap().getCurrentEnemies().size());
                         if (userInput == 0) continue;
-                        currentCharacter.attack(game.getMap().getCurrentEnemies().get(userInput-1));
+                        System.out.println(currentCharacter.attack(game.getMap().getCurrentEnemies().get(userInput-1)));
                     
                     } else if (userInput == 2) { // special ability
                         if (!currentCharacter.isCooldownZero()){
@@ -311,7 +311,7 @@ final public class CLI{
             currentEnemy.decrementCooldown();
             if (currentEnemy.hasAnyBuffs()) {
                 System.out.println("");
-                currentEnemy.updateBuffs();
+                System.out.println(currentEnemy.updateBuffs());
             }
             this.drawFight();
             HelperClass.inputString("Press enter to continue: ");
@@ -325,7 +325,7 @@ final public class CLI{
                 System.out.println("Cooldown left for "+currentEnemy.getAbilityName()+" is "+ currentEnemy.getCooldown()+" round/s.");
                 int playerToAttack = HelperClass.getRandomNumber(0, playersTeam.size()-1);
                 System.out.println("Attacking Character ["+(playerToAttack+1)+"] ("+ playersTeam.get(playerToAttack).getClassName() +")");
-                currentEnemy.attack(playersTeam.get(playerToAttack));
+                System.out.println(currentEnemy.attack(playersTeam.get(playerToAttack)));
                 continue;
             }
             
@@ -333,7 +333,7 @@ final public class CLI{
             if (randomNum <= (100 - prcToUseSpecialAbility)){ // Attac a team character
                 int playerToAttack = HelperClass.getRandomNumber(0, playersTeam.size()-1);
                 System.out.println("Attacking Character ["+(playerToAttack+1)+"] ("+ playersTeam.get(playerToAttack).getClassName() +")");
-                currentEnemy.attack(playersTeam.get(playerToAttack));
+                System.out.println(currentEnemy.attack(playersTeam.get(playerToAttack)));
             }else{ // Use special ability
                 if (currentEnemy.getIsAbilityFriendly()){ // if true use on a random enemy
                     int enemyToCastAbilityOn = HelperClass.getRandomNumber(0, enemies.size()-1);
