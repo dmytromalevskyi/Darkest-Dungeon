@@ -15,6 +15,7 @@ import javax.swing.ToolTipManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Arrays;
 
 final public class GUI extends JFrame implements ActionListener{
     Game game;
@@ -40,7 +41,7 @@ final public class GUI extends JFrame implements ActionListener{
         setSize(1000,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-        ToolTipManager.sharedInstance().setInitialDelay(0);
+        ToolTipManager.sharedInstance().setInitialDelay(60);
 
         fightJPanel.setBackground(Color.cyan);
         abilitiesJPanel.setBackground(Color.BLUE);
@@ -114,19 +115,6 @@ final public class GUI extends JFrame implements ActionListener{
 
     public void fight(){
         
-        /*
-        // Player's team
-        for (int i = 0; i < game.getPlayersTeam().size(); i++) {
-            selectedCharacterIndex = i;
-            selectedCharacter = game.getPlayersTeam().get(selectedCharacterIndex);
-            if (i == 1)
-                selectedCharacter.setCooldown(3);
-            update();
-    
-            // some fight
-            HelperClass.inputString("Player's fight loop for index: "+i);
-        }
-        */
     }
 
     public void updateInvintoryPanel(){
@@ -165,6 +153,9 @@ final public class GUI extends JFrame implements ActionListener{
         for (int i = 0; i < playersTeam.size(); i++) {
             Character character = game.getPlayersTeam().get(i);
             JLabel characterLabel = new JLabel(convertToMultiline(character.toString()));
+            if (character.hasAnyBuffs()){
+                characterLabel.setToolTipText(character.getBuffsStatus());
+            }
 
             playersTeamJPanel.add(characterLabel);
         }
@@ -174,6 +165,9 @@ final public class GUI extends JFrame implements ActionListener{
         for (int i = 0; i < enemies.size(); i++) {
             Character character = game.getMap().getCurrentEnemies().get(i);
             JLabel characterLabel = new JLabel(convertToMultiline(character.toString()));
+            if (character.hasAnyBuffs()){
+                characterLabel.setToolTipText(character.getBuffsStatus());
+            }
 
             currentEnemiesJPanel.add(characterLabel);
         }
@@ -199,13 +193,25 @@ final public class GUI extends JFrame implements ActionListener{
         if (e.getSource() instanceof JButton){ // Buttons
             System.out.println("A button pressed: "+ e.getActionCommand());
             
-            //JOptionPane.showMessageDialog(this, "Enter a valid Number","Name of frame", JOptionPane.PLAIN_MESSAGE);
-            // TODO add radio buttons to dialog window to apply stuff to team/enemies
+            //System.out.println(inputIntDialog("Choose an int", "Input int", 3, true));
+            //showMessageDialog("message", "title");
 
             String buttonActionCommand = e.getActionCommand(); // ABILITY panel buttons
             if (buttonActionCommand.equals("Attack")){
+                int enemyToAttack = inputIntDialog("Enter index of the enemy to attack", "Attack", game.getMap().getCurrentEnemies().size(), true);
+                if (enemyToAttack == -1) return; // return if canceled
+                showMessageDialog(selectedCharacter.attack(game.getMap().getCurrentEnemies().get(enemyToAttack-1)), "Fight outcome");
                 iterateSelectedCharacter();
             } else if (buttonActionCommand.equals("Ability")){
+                if (selectedCharacter.getIsAbilityFriendly()){
+                    int allyToUseAbilityOn = inputIntDialog("Name: "+ selectedCharacter.getAbilityName() + "\nDescription: "+ selectedCharacter.getAbilityDescription() +"\nEnter index of the ally to use ability on", "Use Frendly Ability", game.getPlayersTeam().size(), true);
+                    if (allyToUseAbilityOn == -1) return; // return if canceled
+                    selectedCharacter.useAbility(game.getPlayersTeam().get(allyToUseAbilityOn-1));
+                }else{
+                    int enemyToUseAbilityOn = inputIntDialog("Name: "+ selectedCharacter.getAbilityName() + "\nDescription: "+ selectedCharacter.getAbilityDescription() +"\nEnter index of the enemy to use ability on", "Use Non-Frendly Ability", game.getMap().getCurrentEnemies().size(), true);
+                    if (enemyToUseAbilityOn == -1) return; // return if canceled
+                    selectedCharacter.useAbility(game.getMap().getCurrentEnemies().get(enemyToUseAbilityOn-1));
+                }                
                 iterateSelectedCharacter();
             } else if (buttonActionCommand.equals("Skip")){
                 iterateSelectedCharacter();
@@ -213,12 +219,26 @@ final public class GUI extends JFrame implements ActionListener{
                 System.out.print("Inventory item used. ");
                 int indexOfItem = Integer.parseInt(buttonActionCommand.replace("Item: ", ""));
                 System.out.println("Index is: "+ indexOfItem);
+                Item itemUsed = game.getInventory().get(indexOfItem);
+
+                if (itemUsed.getIsFriendly()){
+                    int allyToUseItemOn = inputIntDialog("Name: "+ itemUsed.getName() + "\nDescription: "+ itemUsed.getDescription() +"\nEnter index of the ally to use item on", "Use Frendly Item", game.getPlayersTeam().size(), true);
+                    if (allyToUseItemOn == -1) return; // return if canceled
+                    itemUsed.use(game.getPlayersTeam().get(allyToUseItemOn-1));
+                }else{
+                    int enemyToUseItemOn = inputIntDialog("Name: "+ itemUsed.getName() + "\nDescription: "+ itemUsed.getDescription() +"\nEnter index of the enemy to use item on", "Use Non-Frendly Item", game.getMap().getCurrentEnemies().size(), true);
+                    if (enemyToUseItemOn == -1) return; // return if canceled
+                    itemUsed.use(game.getMap().getCurrentEnemies().get(enemyToUseItemOn-1));
+                }
+
+                game.updateInventory();
             } else { // OTHER buttons
                 System.out.println("The button is not handled in actionPerformed function.");
             }
-        }else{
+        }else{ // Non-buttons
 
         }
+        update();
     }
 
     public void setSelectedCharacterToFirst(){
@@ -234,10 +254,51 @@ final public class GUI extends JFrame implements ActionListener{
             selectedCharacterIndex++;
         
         selectedCharacter = game.getPlayersTeam().get(selectedCharacterIndex);
+        selectedCharacter.decrementCooldown();
+        if (selectedCharacter.hasAnyBuffs())
+            selectedCharacter.updateBuffs();
         updateStatsPanel();
     }
 
     public static String convertToMultiline(String orig){
         return "<html>" + orig.replaceAll("\n", "<br>");
+    }
+
+    // Ask user to choose an int from the int array
+    //
+    public int inputIntDialog(String message, String title, int[] values, boolean cancelable){
+        Integer[] integerValues = Arrays.stream( values).boxed().toArray( Integer[]::new );
+
+        Integer selectedInteger = (Integer) JOptionPane.showInputDialog(this, message, title, JOptionPane.DEFAULT_OPTION, null, integerValues, values[0]);
+        if ( selectedInteger != null ){
+            return selectedInteger.intValue();
+        }else if (!cancelable){
+            return inputIntDialog(message, title, values, cancelable);
+        }else {
+            return -1;
+        }
+    }
+
+    // Overloading
+    // Ask user to choose an int between min and max with dialog box
+    //
+    public int inputIntDialog(String message, String title, int min, int max, boolean cancelable){
+        int[] values = new int[max-min+1];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = min+i;
+        } 
+
+        return inputIntDialog(message, title, values, cancelable);
+    }
+
+    // Overloading
+    // Ask user to chose a number bettween 1 and max
+    //
+    public int inputIntDialog(String message, String title, int max, boolean cancelable){
+        return inputIntDialog(message, title, 1, max, cancelable);
+    }
+
+    public void showMessageDialog(String message, String title){
+        JOptionPane.showMessageDialog(this, message, title, JOptionPane.DEFAULT_OPTION);
     }
 }

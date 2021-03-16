@@ -79,6 +79,18 @@ public class Character {
         return output;
     }
 
+    public String getBuffsStatus(){
+        String output = "";
+        for (int i = 0; i < this.getBuffs().size(); i++) {            
+            if(this.getBuffs().get(i).getDuration() > 0){
+                output += (this.getBuffs().get(i).getName() + " will last for " + this.getBuffs().get(i).getDuration() + " round/s more.\n");
+            }else{ 
+                output += (this.getBuffs().get(i).getName() + " will finish next round.\n");
+            }
+        }
+        return output;
+    }
+
     // Get stats of the character
     //
     public String toString() {
