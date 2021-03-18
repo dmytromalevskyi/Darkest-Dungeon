@@ -108,7 +108,7 @@ final public class CLI{
                             if (userInput == 0)
                                 continue;
                             else { // apply the item
-                                currentItem.use(charactersToApplyItemTo.get(userInput-1));;
+                                System.out.println(currentItem.use(charactersToApplyItemTo.get(userInput-1)));
                             }
                             game.updateInventory(); // remove finished items
                             drawFight();

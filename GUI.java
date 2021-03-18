@@ -154,7 +154,8 @@ final public class GUI extends JFrame implements ActionListener{
             Character character = game.getPlayersTeam().get(i);
             JLabel characterLabel = new JLabel(convertToMultiline(character.toString()));
             if (character.hasAnyBuffs()){
-                characterLabel.setToolTipText(character.getBuffsStatus());
+                //characterLabel.setToolTipText(character.getBuffsStatus());
+                characterLabel.setToolTipText(convertToMultiline(character.getBuffsStatus()));
             }
 
             playersTeamJPanel.add(characterLabel);
@@ -166,7 +167,7 @@ final public class GUI extends JFrame implements ActionListener{
             Character character = game.getMap().getCurrentEnemies().get(i);
             JLabel characterLabel = new JLabel(convertToMultiline(character.toString()));
             if (character.hasAnyBuffs()){
-                characterLabel.setToolTipText(character.getBuffsStatus());
+                characterLabel.setToolTipText(convertToMultiline(character.getBuffsStatus()));
             }
 
             currentEnemiesJPanel.add(characterLabel);
@@ -183,7 +184,7 @@ final public class GUI extends JFrame implements ActionListener{
             useAbilityButton.setToolTipText(null);
         }else{
             useAbilityButton.setEnabled(false);
-            useAbilityButton.setToolTipText("Cooldown: "+selectedCharacter.getCooldown());
+            useAbilityButton.setToolTipText("Cooldown: "+selectedCharacter.getCooldown()+ " round/s");
         }
 
     }
@@ -224,11 +225,11 @@ final public class GUI extends JFrame implements ActionListener{
                 if (itemUsed.getIsFriendly()){
                     int allyToUseItemOn = inputIntDialog("Name: "+ itemUsed.getName() + "\nDescription: "+ itemUsed.getDescription() +"\nEnter index of the ally to use item on", "Use Frendly Item", game.getPlayersTeam().size(), true);
                     if (allyToUseItemOn == -1) return; // return if canceled
-                    itemUsed.use(game.getPlayersTeam().get(allyToUseItemOn-1));
+                    showMessageDialog(itemUsed.use(game.getPlayersTeam().get(allyToUseItemOn-1)), "Using Item");
                 }else{
                     int enemyToUseItemOn = inputIntDialog("Name: "+ itemUsed.getName() + "\nDescription: "+ itemUsed.getDescription() +"\nEnter index of the enemy to use item on", "Use Non-Frendly Item", game.getMap().getCurrentEnemies().size(), true);
                     if (enemyToUseItemOn == -1) return; // return if canceled
-                    itemUsed.use(game.getMap().getCurrentEnemies().get(enemyToUseItemOn-1));
+                    showMessageDialog(itemUsed.use(game.getMap().getCurrentEnemies().get(enemyToUseItemOn-1)), "Using Item");
                 }
 
                 game.updateInventory();
@@ -258,7 +259,10 @@ final public class GUI extends JFrame implements ActionListener{
         selectedCharacter.decrementCooldown();
         if (selectedCharacter.hasAnyBuffs())
             selectedCharacter.updateBuffs();
+        
         updateStatsPanel();
+        game.removeDead();
+        updateFightPanel();
     }
 
     // Randomised attact by the enemy

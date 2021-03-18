@@ -23,6 +23,18 @@ public class Buff {
         this.isFriendly = isFriendly;
     }
 
+    public Buff clone(){
+        return new Buff(
+            name,
+            description,
+            healthEffect,
+            damageEffect,
+            agilityEffect,
+            defenceEffect,
+            duration, 
+            isFriendly);
+    }
+
     //  Decrease the duration of buff by 1
     //
     public void decrementDuration() {

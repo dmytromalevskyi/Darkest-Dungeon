@@ -12,13 +12,32 @@ public final class PermanentItem extends Item{
         this.defenceEffect = defenceEffect;
     }
 
-    public void use(Character victimCharacter){
-        victimCharacter.setHealth(victimCharacter.getHealth() + this.healthEffect);
-        victimCharacter.setDamage(victimCharacter.getDamage() + this.damageEffect);
-        victimCharacter.setAgility(victimCharacter.getAgility() + this.agilityEffect);
-        victimCharacter.setDefence(victimCharacter.getDefence() + this.defenceEffect);
-
+    public String use(Character victimCharacter){
+        Character charBeforeItem = victimCharacter.clone();
         this.decrementAmount();
+        String output = ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+        output += "Using "+ this.getName() + " on "+ victimCharacter.getClassName() + "\n";
+        if (healthEffect != 0){
+            victimCharacter.setHealth(victimCharacter.getHealth() + this.healthEffect);
+            output += "New health "+charBeforeItem.getHealth()+" ~~> "+ victimCharacter.getHealth() +"\n";
+        }if (damageEffect != 0){
+            victimCharacter.setDamage(victimCharacter.getDamage() + this.damageEffect);
+            output += "New damage "+charBeforeItem.getDamage()+" ~~> "+ victimCharacter.getDamage() +"\n";
+        }if (agilityEffect != 0){
+            victimCharacter.setAgility(victimCharacter.getAgility() + this.agilityEffect);
+            output += "New agility "+charBeforeItem.getAgility()+" ~~> "+ victimCharacter.getAgility() +"\n";
+        }if (defenceEffect != 0){
+            victimCharacter.setDefence(victimCharacter.getDefence() + this.defenceEffect);
+            output += "New defence "+charBeforeItem.getDefence()+" ~~> "+ victimCharacter.getDefence() +"\n";
+        }
+        
+        if (this.getNumberOf() != 0)
+            output += "Number of "+this.getName()+" left in the inventory: "+ this.getNumberOf()+"\n";
+        else 
+            output += "No "+this.getName()+" left in the inventory.\n";
+        
+        output += ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+        return output;
     }
 
     public static PermanentItem getRedPotion(int healthEffect, int numberOf) {

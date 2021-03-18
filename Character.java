@@ -91,6 +91,26 @@ public class Character {
         return output;
     }
 
+    // Clone a given character
+    //
+    public Character clone(){
+        Character characterCopy = new Character(
+            className,
+            health,
+            damage,
+            agility, 
+            defence);
+        
+        List<Buff> buffsCopy = new ArrayList<>();
+        for (int i = 0; i < getBuffs().size(); i++) {
+            buffsCopy.add(getBuffs().get(i).clone());
+        }
+        characterCopy.setBuffs(buffsCopy);
+        characterCopy.setCooldown(this.getCooldown());
+
+        return characterCopy;
+    }
+
     // Get stats of the character
     //
     public String toString() {

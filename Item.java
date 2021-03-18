@@ -11,9 +11,9 @@ public class Item{
         this.isFriendly = isFriendly;
     }
 
-    public void use(Character victimCharacter){
+    public String use(Character victimCharacter){
         // for polymorphism
-        
+        return "";
     }
 
     public void decrementAmount() {
