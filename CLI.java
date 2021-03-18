@@ -315,11 +315,6 @@ final public class CLI{
             }
             this.drawFight();
             HelperClass.inputString("Press enter to continue: ");
-            /*try {
-                TimeUnit.SECONDS.sleep(6);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }*/
 
             if(!currentEnemy.isCooldownZero()){ // if cooldown is not 0, only attack
                 System.out.println("Cooldown left for "+currentEnemy.getAbilityName()+" is "+ currentEnemy.getCooldown()+" round/s.");

@@ -248,9 +248,10 @@ final public class GUI extends JFrame implements ActionListener{
     }
 
     public void iterateSelectedCharacter(){
-        if(selectedCharacterIndex >= game.getPlayersTeam().size()-1)
+        if(selectedCharacterIndex >= game.getPlayersTeam().size()-1){
             selectedCharacterIndex = 0;
-        else
+            randomisedAttackForEnemies();
+        }else
             selectedCharacterIndex++;
         
         selectedCharacter = game.getPlayersTeam().get(selectedCharacterIndex);
@@ -258,6 +259,67 @@ final public class GUI extends JFrame implements ActionListener{
         if (selectedCharacter.hasAnyBuffs())
             selectedCharacter.updateBuffs();
         updateStatsPanel();
+    }
+
+    // Randomised attact by the enemy
+    public void randomisedAttackForEnemies() {
+        List<Character> playersTeam = game.getPlayersTeam();
+        List<Character> enemies = game.getMap().getCurrentEnemies();
+        int prcToUseSpecialAbility = 20; // [0, 100] range
+        
+        if (!game.getMap().getCurrentTile().areEnemiesPresent()){
+            showMessageDialog("No enemies to fight in this tile.", "Empty tile");
+            return;
+        }else{
+            showMessageDialog("Enemies' turn", "Warning");
+        }
+
+        for (int i = 0; i < enemies.size(); i++) {
+            if (game.isTeamDead()){
+                showMessageDialog("The team is dead, you lost!", "Game Over");
+                System.exit(0);
+            }
+            
+            Character currentEnemy = enemies.get(i);
+            String output = "";
+            output += ("=== Current Enemy ("+ currentEnemy.getClassName() +") ["+(i+1)+"] ===\n");            
+            currentEnemy.decrementCooldown();
+            if (currentEnemy.hasAnyBuffs()) {
+                output += ("\n"+currentEnemy.updateBuffs()+"\n");
+            }
+
+            if(!currentEnemy.isCooldownZero()){ // if cooldown is not 0, only attack
+                output += ("Cooldown left for "+currentEnemy.getAbilityName()+" is "+ currentEnemy.getCooldown()+" round/s.\n");
+                int playerToAttack = HelperClass.getRandomNumber(0, playersTeam.size()-1);
+                output += ("Attacking Character ["+(playerToAttack+1)+"] ("+ playersTeam.get(playerToAttack).getClassName() +")\n");
+                output += (currentEnemy.attack(playersTeam.get(playerToAttack))+"\n");
+                showMessageDialog(output, "Enemy Attack");
+                continue;
+            }
+            
+            int randomNum = HelperClass.getRandomNumber(1, 100);
+            if (randomNum <= (100 - prcToUseSpecialAbility)){ // Attac a team character
+                int playerToAttack = HelperClass.getRandomNumber(0, playersTeam.size()-1);
+                output += ("Attacking Character ["+(playerToAttack+1)+"] ("+ playersTeam.get(playerToAttack).getClassName() +")\n");
+                output += (currentEnemy.attack(playersTeam.get(playerToAttack))+"\n");
+            }else{ // Use special ability
+                if (currentEnemy.getIsAbilityFriendly()){ // if true use on a random enemy
+                    int enemyToCastAbilityOn = HelperClass.getRandomNumber(0, enemies.size()-1);
+                    output += ("Using "+ currentEnemy.getAbilityName() +" on Enemy ["+(enemyToCastAbilityOn+1)+"] ("+ enemies.get(enemyToCastAbilityOn).getClassName() +")\n");
+                    currentEnemy.useAbility(enemies.get(enemyToCastAbilityOn));
+                }else{ // use on a team character
+                    int charToCastAbilityOn = HelperClass.getRandomNumber(0, playersTeam.size()-1);
+                    output += ("Using "+ currentEnemy.getAbilityName() +" on Character ["+(charToCastAbilityOn+1)+"] ("+ playersTeam.get(charToCastAbilityOn).getClassName() +")\n");
+                    currentEnemy.useAbility(playersTeam.get(charToCastAbilityOn));
+                }
+                
+            }
+
+            game.removeDead();
+            update();
+            showMessageDialog(output, "Enemy Attack");
+        }
+        
     }
 
     public static String convertToMultiline(String orig){
