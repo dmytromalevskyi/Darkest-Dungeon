@@ -9,28 +9,46 @@ final public class CLI{
 
     }
 
-    public void play() {
-        if (true) {
-            //game.getMap().draw();
-            //System.out.println("Current tile: "+(map.getCurrentCoordinates()[1]+1)+","+(map.getCurrentCoordinates()[0]+1));
-            //this.fight();
+    public void run() {
+        List<Character> enemies = new ArrayList<>();    // ENEMY ON NEXT TILE
+        enemies.add(new Paladin(0, 0.2)); //100
+        enemies.add(new Thief(0, 0.15));   //55
+        enemies.add(new Preacher(0));      //70 
+        game.getMap().getTile(new int[]{
+            game.getMap().getCurrentCoordinateX(),
+            game.getMap().getCurrentCoordinateY()+1
+        }).setEnemies(enemies);
 
-            //map.move(new byte[] {1,1});
-            //map.draw();
-            //System.out.println("Current tile: "+(map.getCurrentCoordinates()[1]+1)+","+(map.getCurrentCoordinates()[0]+1));
-            
-            List<Character> enemies = new ArrayList<>();    // ENEMY
-            enemies.add(new Paladin(100, 0.2));
-            enemies.add(new Thief(55, 0.15));
-            enemies.add(new Preacher(70));           
-            game.getMap().getCurrentTile().setEnemies(enemies);
-
-            fight();
+        while (!game.isTeamDead() && !game.isEndOfTheMap()) {
+            game.getMap().draw();
+            printCurrentCoordinates();
+            this.fight();
+            inputMove();
         }
-        
+        deinitialization(); // end of the game
     }
 
-        // Enter "fight" or tell user that the tile is empty
+    // Ask the user to enter coordinates to move around the map
+    //
+    public void inputMove(){
+        final int maxX = game.getMap().getMaxCoordinateX();
+        final int maxY = game.getMap().getMaxCoordinateY();
+
+        final int currentY = game.getMap().getCurrentCoordinateY();
+        int moveToY = HelperClass.inputInt("Enter the coloumn you want to go to (current "+(currentY+1)+"): ", Math.max(currentY, 1), Math.min(currentY+2, maxY+1));
+        
+        final int currentX = game.getMap().getCurrentCoordinateX();
+        int moveToX = HelperClass.inputInt("Enter the row you want to go to (current "+(currentX+1)+"): ", Math.max(currentX, 1), Math.min(currentX+2, maxX+1));
+
+        if(!game.getMap().getTile(new int[]{moveToX-1,moveToY-1}).getIsPath()){
+            System.out.println("The tile you have chosen is not a part of the path, please enter the coordinates again.");
+            inputMove();
+            return;
+        }
+        game.getMap().move(new int[]{moveToX-1,moveToY-1});
+    }
+
+    // Enter "fight" or tell user that the tile is empty
     //
     public void fight() {
         if (!game.getMap().getCurrentTile().areEnemiesPresent()) { // if no enemies
@@ -131,11 +149,26 @@ final public class CLI{
             if (!game.getMap().getCurrentTile().areEnemiesPresent()) {
                 System.out.println("\n<---ALL ENAMIES DEFETED!--->");
             } else if (game.isTeamDead()) {
-                System.out.println("\n<---GAME OVER--->");
+                deinitialization();
                 System.exit(0);
             }
         }
     }
+
+    // Function to run when the game is finished
+    //
+    public void deinitialization(){
+        System.out.println("++++++++++++++++++++++++++++++++++++++++");
+        if(game.isTeamDead()){
+            System.out.println("GAME OVER");
+        }else{
+            System.out.println("WELL DONE!!!");
+            System.out.println("YOU HAVE SUCCESSFULLY ESCAPED THE DUNGEON");
+            System.out.println("NOT MANY HAVE DONE THAT");
+        }
+        System.out.println("++++++++++++++++++++++++++++++++++++++++");  
+    }
+    
 
     // Draw the "fight"
     //
@@ -149,6 +182,10 @@ final public class CLI{
         System.out.println("\n------------------------------------------------------------");
         this.printCharactersInfo();
         System.out.println("------------------------------------------------------------\n");
+    }
+
+    public void printCurrentCoordinates(){
+        System.out.println(game.getCurrentCoordinatesString());
     }
 
     // Print all characters' info

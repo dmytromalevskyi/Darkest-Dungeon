@@ -2,15 +2,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Tile {
-    private boolean isWall;
+    private boolean isPath = false;
     private List<Character> enemies = new ArrayList<>();
     
-    public Tile(boolean isWall){
-        this.isWall = isWall;
+    public Tile(boolean isPath){
+        this.isPath = isPath;
+    }
+
+    // Initialise a tile that is not a path
+    //
+    public Tile(){
     }
 
     public Tile(List<Character> enemies){
-        this.isWall = false;
+        this.isPath = true;
         this.enemies = enemies;
     }
 
@@ -30,11 +35,11 @@ public class Tile {
         return false;
     }
 
-    public boolean getIsWall(){
-        return this.isWall;
+    public boolean getIsPath(){
+        return this.isPath;
     }
 
-    public void setIsWall(boolean isWall){
-        this.isWall = isWall;
+    public void setIsPath(boolean isPath){
+        this.isPath = isPath;
     }
 }

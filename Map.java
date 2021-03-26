@@ -2,26 +2,19 @@ import java.util.List;
 
 public final class Map {
     private Tile[][] tiles;
-    private byte[] currentCoordinates = new byte[2];
+    private int[] currentCoordinates = new int[2];
+    private int[] endOfTheMap = new int[2];
 
     public Map(int sizeOfTheMap){
         this.tiles = new Tile[sizeOfTheMap][sizeOfTheMap];
-        this.currentCoordinates = new byte[2];
-        currentCoordinates[0] = 1;
-        currentCoordinates[1] = 0;
-        // make all outter tiles as walls exept the starting positing
+        this.currentCoordinates = new int[2];
+        int approximateMiddleX = Math.round(sizeOfTheMap/2);
+        currentCoordinates = new int[]{approximateMiddleX,0};
+        endOfTheMap = new int[]{approximateMiddleX, sizeOfTheMap-1};
         for (int i = 0; i < this.tiles.length; i++) {
             for (int j = 0; j < this.tiles.length; j++) {
-                if (i == 1 && j == 0) // starting point
-                    this.tiles[i][j] = new Tile(false);
-                else if (i == 0)
-                    this.tiles[i][j] = new Tile(true); // top walls
-                else if (i == sizeOfTheMap - 1)
-                    this.tiles[i][j] = new Tile(true); // bottom walls
-                else if (j == 0)
-                    this.tiles[i][j] = new Tile(true); // left edge
-                else if (j == sizeOfTheMap - 1)
-                    this.tiles[i][j] = new Tile(true); // right edge
+                if (i == currentCoordinates[0])
+                    this.tiles[i][j] = new Tile(true);
                 else
                     this.tiles[i][j] = new Tile(false);
             }
@@ -40,8 +33,9 @@ public final class Map {
         String redBG = "\u001B[41m";
         String greenBG = "\u001B[42m";
 
-        String isWallColour = greenBG;
-        String notWallColour = reset;
+        String isPathColour = greenBG;
+        String notPathColour = reset;
+        String currentCoordinateColour = redBG;
 
         System.out.println("dimention: "+dimention);
         
@@ -55,18 +49,21 @@ public final class Map {
             System.out.print(" ┃");
             for (int z = 0; z <= dimention-1; z++){
                 
-                String lookChange = (this.tiles[i][z].getIsWall()) ? isWallColour : notWallColour;
+                String lookChange;
+                if(i == getCurrentCoordinateX() && z == getCurrentCoordinateY()){
+                    lookChange = currentCoordinateColour;
+                }else{
+                    lookChange = (this.tiles[i][z].getIsPath()) ? isPathColour  : notPathColour;
+                }
                 
                 if (z == dimention-1){
-                    // If the boolean is true print 1
-                    if (this.tiles[i][z].getIsWall())
+                    if (this.tiles[i][z].getIsPath())
                         System.out.print(lookChange + forTrue + reset);
                     else
                         System.out.print(lookChange + forFalse + reset);
                     System.out.print("┃ " + (i+1) + "\n");
                 }else{
-                    // If the boolean is true print 1
-                    if (this.tiles[i][z].getIsWall())
+                    if (this.tiles[i][z].getIsPath())
                         System.out.print(lookChange + forTrue + reset);
                     else
                         System.out.print(lookChange + forFalse + reset);
@@ -151,16 +148,52 @@ public final class Map {
 
     // Change position of the player on the map
     //
-    public void move(byte[] newCoordinates) {
+    public void move(int[] newCoordinates) {
         this.currentCoordinates = newCoordinates;
     }
 
     public Tile getCurrentTile() {
-        return this.tiles[this.currentCoordinates[0]][this.currentCoordinates[1]];
+        return getTile(currentCoordinates);
     }
 
-    public byte[] getCurrentCoordinates() {
+    public Tile getTile(int[] coordinates) {
+        return this.tiles[coordinates[0]][coordinates[1]];
+    } 
+
+    public int[] getCurrentCoordinates() {
         return this.currentCoordinates;
+    }
+
+    public int getCurrentCoordinateX(){
+        return getCurrentCoordinates()[0];
+    }
+
+    public int getCurrentCoordinateY(){
+        return getCurrentCoordinates()[1];
+    }
+
+    public int getMaxCoordinateX(){
+        return tiles.length;
+    }
+
+    public int getMaxCoordinateY(){
+        return tiles[0].length;
+    }
+
+    public int[] getEndOfTheMap(){
+        return this.endOfTheMap;
+    }
+
+    public void setEndOfTheMap(int[] endOfTheMap){
+        this.endOfTheMap = endOfTheMap;
+    }
+
+    public boolean isEndOfTheMap(){
+        if (getCurrentCoordinateX() == getEndOfTheMap()[0] && getCurrentCoordinateY() == getEndOfTheMap()[1]){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }

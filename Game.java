@@ -20,7 +20,7 @@ final public class Game {
             //gui.update();
         }else if (inputString.equals("-l")){
             CLI cli = new CLI(10);
-            cli.play();
+            cli.run();
         }else if (inputString.equals("-h")){
             System.out.println("-g\tuse graphical user interface");
             System.out.println("-l\tuse command line based interface");
@@ -77,6 +77,11 @@ final public class Game {
         }
     }
 
+    public String getCurrentCoordinatesString(){
+     return "Current tile (column, row): "+(getMap().getCurrentCoordinateY()+1)+","+(getMap().getCurrentCoordinateX()+1);
+    }
+
+
     public List<Character> getPlayersTeam() {
         return this.playersTeam;
     }
@@ -102,6 +107,10 @@ final public class Game {
 
     public void setMap(Map newMap){
         this.map = newMap;
+    }
+
+    public boolean isEndOfTheMap(){
+        return getMap().isEndOfTheMap();
     }
 
     public List<Item> getInventory() {

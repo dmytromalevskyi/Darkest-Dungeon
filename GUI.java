@@ -38,7 +38,7 @@ final public class GUI extends JFrame implements ActionListener{
         this.game = new Game(sizeOfTheMap);
         selectedCharacter = game.getPlayersTeam().get(selectedCharacterIndex);
         setTitle("Game");
-        setSize(1000,600);
+        setSize(1200,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         ToolTipManager.sharedInstance().setInitialDelay(60);
@@ -152,9 +152,8 @@ final public class GUI extends JFrame implements ActionListener{
         playersTeamJPanel.setLayout(new GridLayout(1,playersTeam.size(),10,10)); // playersTeam PANEL      
         for (int i = 0; i < playersTeam.size(); i++) {
             Character character = game.getPlayersTeam().get(i);
-            JLabel characterLabel = new JLabel(convertToMultiline(character.toString()));
+            JLabel characterLabel = new JLabel(convertToMultiline("["+(i+1)+"] " + character.toString()));
             if (character.hasAnyBuffs()){
-                //characterLabel.setToolTipText(character.getBuffsStatus());
                 characterLabel.setToolTipText(convertToMultiline(character.getBuffsStatus()));
             }
 
@@ -165,7 +164,7 @@ final public class GUI extends JFrame implements ActionListener{
         currentEnemiesJPanel.setLayout(new GridLayout(1,enemies.size(),10,10)); // currentEnemies PANEL     
         for (int i = 0; i < enemies.size(); i++) {
             Character character = game.getMap().getCurrentEnemies().get(i);
-            JLabel characterLabel = new JLabel(convertToMultiline(character.toString()));
+            JLabel characterLabel = new JLabel(convertToMultiline("["+(i+1)+"] " + character.toString()));
             if (character.hasAnyBuffs()){
                 characterLabel.setToolTipText(convertToMultiline(character.getBuffsStatus()));
             }
@@ -193,9 +192,6 @@ final public class GUI extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() instanceof JButton){ // Buttons
             System.out.println("A button pressed: "+ e.getActionCommand());
-            
-            //System.out.println(inputIntDialog("Choose an int", "Input int", 3, true));
-            //showMessageDialog("message", "title");
 
             String buttonActionCommand = e.getActionCommand(); // ABILITY panel buttons
             if (buttonActionCommand.equals("Attack")){
@@ -289,13 +285,13 @@ final public class GUI extends JFrame implements ActionListener{
             output += ("=== Current Enemy ("+ currentEnemy.getClassName() +") ["+(i+1)+"] ===\n");            
             currentEnemy.decrementCooldown();
             if (currentEnemy.hasAnyBuffs()) {
-                output += ("\n"+currentEnemy.updateBuffs()+"\n");
+                output += ("\n Buffs and Items: \n"+currentEnemy.updateBuffs()+"\n");
             }
 
             if(!currentEnemy.isCooldownZero()){ // if cooldown is not 0, only attack
                 output += ("Cooldown left for "+currentEnemy.getAbilityName()+" is "+ currentEnemy.getCooldown()+" round/s.\n");
                 int playerToAttack = HelperClass.getRandomNumber(0, playersTeam.size()-1);
-                output += ("Attacking Character ["+(playerToAttack+1)+"] ("+ playersTeam.get(playerToAttack).getClassName() +")\n");
+                output += ("\nAttacking Character ["+(playerToAttack+1)+"] ("+ playersTeam.get(playerToAttack).getClassName() +")\n");
                 output += (currentEnemy.attack(playersTeam.get(playerToAttack))+"\n");
                 showMessageDialog(output, "Enemy Attack");
                 continue;
@@ -304,7 +300,7 @@ final public class GUI extends JFrame implements ActionListener{
             int randomNum = HelperClass.getRandomNumber(1, 100);
             if (randomNum <= (100 - prcToUseSpecialAbility)){ // Attac a team character
                 int playerToAttack = HelperClass.getRandomNumber(0, playersTeam.size()-1);
-                output += ("Attacking Character ["+(playerToAttack+1)+"] ("+ playersTeam.get(playerToAttack).getClassName() +")\n");
+                output += ("Attacking Character ("+ playersTeam.get(playerToAttack).getClassName() +") ["+(playerToAttack+1)+"]\n");
                 output += (currentEnemy.attack(playersTeam.get(playerToAttack))+"\n");
             }else{ // Use special ability
                 if (currentEnemy.getIsAbilityFriendly()){ // if true use on a random enemy
