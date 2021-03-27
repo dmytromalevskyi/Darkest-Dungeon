@@ -160,6 +160,10 @@ public final class Map {
         return this.tiles[coordinates[0]][coordinates[1]];
     } 
 
+    public Tile[][] getTiles(){
+        return this.tiles;
+    }
+
     public int[] getCurrentCoordinates() {
         return this.currentCoordinates;
     }

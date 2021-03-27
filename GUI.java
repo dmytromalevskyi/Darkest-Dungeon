@@ -2,6 +2,8 @@ import java.awt.Color;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -12,6 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.ToolTipManager;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -23,7 +26,7 @@ final public class GUI extends JFrame implements ActionListener{
     Character selectedCharacter;
 
 
-    // Panels
+    // // // Panels // // //
     JPanel fightJPanel = new JPanel();
         JPanel playersTeamJPanel = new JPanel();
         JPanel currentEnemiesJPanel = new JPanel();
@@ -33,6 +36,12 @@ final public class GUI extends JFrame implements ActionListener{
         JTextArea statsTextArea = new JTextArea();
     JPanel inventoryJPanel = new JPanel();
     JPanel mapJPanel = new JPanel();
+
+    // // // Constants // // //#
+    // Map colours
+    final Color currentTileColour = Color.RED;
+    final Color pathTileColour = Color.GREEN;
+    final Color notPathTileColour = null;
 
     public GUI(int sizeOfTheMap){
         this.game = new Game(sizeOfTheMap);
@@ -47,7 +56,7 @@ final public class GUI extends JFrame implements ActionListener{
         abilitiesJPanel.setBackground(Color.BLUE);
         statsJPanel.setBackground(Color.GRAY);
         inventoryJPanel.setBackground(Color.MAGENTA);
-        mapJPanel.setBackground(Color.GREEN);
+        mapJPanel.setBackground(Color.PINK);
 
         JPanel fightJPanel = new JPanel(); // CENTER PANEL - FIGHT PANEL
         fightJPanel.setLayout(new GridLayout(1,2,10,10)); 
@@ -81,6 +90,9 @@ final public class GUI extends JFrame implements ActionListener{
         statsTextArea.setOpaque(false);
         statsTextArea.setWrapStyleWord(false);
 
+        mapJPanel.setLayout(new GridLayout(game.getMap().getMaxCoordinateX()+1, // MAP PANEL
+        game.getMap().getMaxCoordinateY()+1, 5,5));
+        initialiseMapJPanel();
 
         add(fightJPanel, BorderLayout.CENTER);
         add(southJPanel, BorderLayout.SOUTH);
@@ -94,10 +106,7 @@ final public class GUI extends JFrame implements ActionListener{
 
         setVisible(true);
         ///pack();
-        update();
-
-        //fight();
-        
+        update();        
         update();
     }
 
@@ -111,10 +120,6 @@ final public class GUI extends JFrame implements ActionListener{
         //change the length of the frame to refresh it (a bug that makes some elements not visible)
         this.setSize(getWidth()-1, getHeight()-1);
         this.setSize(getWidth()+1, getHeight()+1);
-    }
-
-    public void fight(){
-        
     }
 
     public void updateInvintoryPanel(){
@@ -133,6 +138,34 @@ final public class GUI extends JFrame implements ActionListener{
             itemButton.addActionListener(this);
 
             inventoryJPanel.add(itemButton);
+        }
+    }
+
+    public void initialiseMapJPanel(){
+        final Tile[][] tiles = game.getMap().getTiles();
+
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = 0; j < tiles[i].length; j++) {
+                JButton button = new JButton();
+                button.setFocusable(false);
+                button.addActionListener(this);
+                Color buttonColour = null;
+
+                if(i == game.getMap().getCurrentCoordinateX() && j == game.getMap().getCurrentCoordinateY()){
+                    buttonColour = currentTileColour;
+                    button.setActionCommand("Map: "+i+","+j);
+                } else if(!game.getMap().getTile(new int[]{i,j}).getIsPath()){
+                    buttonColour = notPathTileColour;
+                    button.setEnabled(false);
+                } else if(game.getMap().getTile(new int[]{i,j}).getIsPath()){
+                    buttonColour = pathTileColour;
+                    button.setActionCommand("Map: "+i+","+j);
+                } else {
+                    System.out.println("Unrecognised tile (i,j): "+i+","+j);
+                }
+                button.setBackground(buttonColour);
+                mapJPanel.add(button);
+            }
         }
     }
 
@@ -212,8 +245,8 @@ final public class GUI extends JFrame implements ActionListener{
                 iterateSelectedCharacter();
             } else if (buttonActionCommand.equals("Skip")){
                 iterateSelectedCharacter();
-            }else if (buttonActionCommand.contains("Item: ")){
-                System.out.print("Inventory item used. ");
+            }else if (buttonActionCommand.contains("Item: ")){ // INVENTORY
+                System.out.print("Inventory item used.");
                 int indexOfItem = Integer.parseInt(buttonActionCommand.replace("Item: ", ""));
                 System.out.println("Index is: "+ indexOfItem);
                 Item itemUsed = game.getInventory().get(indexOfItem);
@@ -229,6 +262,24 @@ final public class GUI extends JFrame implements ActionListener{
                 }
 
                 game.updateInventory();
+            } else if (buttonActionCommand.contains("Map: ")){ // MAP
+                if(game.areEnemiesPresentHere()){
+                    showMessageDialog("You can't leave this tile until you defeat all enemies.", "You can't run away");
+                    return;
+                }
+                final int coordinateX = Integer.parseInt(buttonActionCommand.replace("Map: ", "").split(",")[0]);
+                final int coordinateY = Integer.parseInt(buttonActionCommand.replace("Map: ", "").split(",")[1]);
+
+                final int currentCoordinateX = game.getMap().getCurrentCoordinateX();
+                final int currentCoordinateY = game.getMap().getCurrentCoordinateY();
+
+                // Don't allow jumping over blocks
+                if ((currentCoordinateX-1 <= coordinateX && coordinateX >= currentCoordinateX+1)&& (currentCoordinateY-1 <= coordinateY && coordinateY >= currentCoordinateY+1)){
+                    showMessageDialog("Moving to tile: "+coordinateY+","+coordinateX, "Walking");
+                    game.getMap().move(new int[]{coordinateX,coordinateY});
+                }else{
+                    showMessageDialog("You can only move one tile at a tile.", "Invalid tile");
+                }
             } else { // OTHER buttons
                 System.out.println("The button is not handled in actionPerformed function.");
             }

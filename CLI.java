@@ -11,9 +11,9 @@ final public class CLI{
 
     public void run() {
         List<Character> enemies = new ArrayList<>();    // ENEMY ON NEXT TILE
-        enemies.add(new Paladin(0, 0.2)); //100
-        enemies.add(new Thief(0, 0.15));   //55
-        enemies.add(new Preacher(0));      //70 
+        enemies.add(new Paladin(100, 0.2)); //100
+        enemies.add(new Thief(55, 0.15));   //55
+        enemies.add(new Preacher(70));      //70 
         game.getMap().getTile(new int[]{
             game.getMap().getCurrentCoordinateX(),
             game.getMap().getCurrentCoordinateY()+1
