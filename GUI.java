@@ -31,13 +31,14 @@ final public class GUI extends JFrame implements ActionListener{
         JPanel playersTeamJPanel = new JPanel();
         JPanel currentEnemiesJPanel = new JPanel();
     JPanel abilitiesJPanel = new JPanel();
+        JButton attackButton;
         JButton useAbilityButton;
     JPanel statsJPanel = new JPanel();
         JTextArea statsTextArea = new JTextArea();
     JPanel inventoryJPanel = new JPanel();
     JPanel mapJPanel = new JPanel();
 
-    // // // Constants // // //#
+    // // // Constants // // //
     // Map colours
     final Color currentTileColour = Color.RED;
     final Color pathTileColour = Color.GREEN;
@@ -73,7 +74,7 @@ final public class GUI extends JFrame implements ActionListener{
         southJPanel.add(mapJPanel);
         
 
-        JButton attackButton = new JButton("Attack"); // ABILITY PANEL
+        attackButton = new JButton("Attack"); // ABILITY PANEL
         attackButton.setFocusable(false); attackButton.addActionListener(this);
         useAbilityButton = new JButton("Ability"); useAbilityButton.setFocusable(false); useAbilityButton.addActionListener(this);
         JButton skipButton = new JButton("Skip"); skipButton.setFocusable(false); skipButton.addActionListener(this);
@@ -92,16 +93,16 @@ final public class GUI extends JFrame implements ActionListener{
 
         mapJPanel.setLayout(new GridLayout(game.getMap().getMaxCoordinateX()+1, // MAP PANEL
         game.getMap().getMaxCoordinateY()+1, 5,5));
-        initialiseMapJPanel();
+        updateMapPanel();
 
         add(fightJPanel, BorderLayout.CENTER);
         add(southJPanel, BorderLayout.SOUTH);
 
         // Adding enemies
         List<Character> enemies = new ArrayList<>();    // ENEMY
-        enemies.add(new Paladin(100, 0.2));
-        enemies.add(new Thief(55, 0.15));
-        enemies.add(new Preacher(70));           
+        enemies.add(new Paladin(0, 0.2));
+        enemies.add(new Thief(0, 0.15));
+        enemies.add(new Preacher(0));           
         game.getMap().getCurrentTile().setEnemies(enemies);
 
         setVisible(true);
@@ -115,7 +116,7 @@ final public class GUI extends JFrame implements ActionListener{
         updateAblilityPanel(); // update ability panel
         updateStatsPanel(); //update display of stats of the selected char.
         updateInvintoryPanel(); // update invintory panel
-        // update map panel
+        updateMapPanel(); // update map panel
         
         //change the length of the frame to refresh it (a bug that makes some elements not visible)
         this.setSize(getWidth()-1, getHeight()-1);
@@ -141,8 +142,10 @@ final public class GUI extends JFrame implements ActionListener{
         }
     }
 
-    public void initialiseMapJPanel(){
+
+    public void updateMapPanel(){
         final Tile[][] tiles = game.getMap().getTiles();
+        mapJPanel.removeAll();
 
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {
@@ -219,6 +222,14 @@ final public class GUI extends JFrame implements ActionListener{
             useAbilityButton.setToolTipText("Cooldown: "+selectedCharacter.getCooldown()+ " round/s");
         }
 
+        // if no enemies
+        if(!game.areEnemiesPresentHere()){
+            attackButton.setEnabled(false);
+            useAbilityButton.setEnabled(false);
+        }else{
+            attackButton.setEnabled(true);
+        }
+
     }
 
     @Override
@@ -274,9 +285,13 @@ final public class GUI extends JFrame implements ActionListener{
                 final int currentCoordinateY = game.getMap().getCurrentCoordinateY();
 
                 // Don't allow jumping over blocks
-                if ((currentCoordinateX-1 <= coordinateX && coordinateX >= currentCoordinateX+1)&& (currentCoordinateY-1 <= coordinateY && coordinateY >= currentCoordinateY+1)){
+                if ((currentCoordinateX-1 <= coordinateX && coordinateX <= currentCoordinateX+1)&& (currentCoordinateY-1 <= coordinateY && coordinateY <= currentCoordinateY+1)){
                     showMessageDialog("Moving to tile: "+coordinateY+","+coordinateX, "Walking");
                     game.getMap().move(new int[]{coordinateX,coordinateY});
+                    if(game.getMap().isEndOfTheMap()){
+                        showMessageDialog("This tile leads to the exit of the dungeon!", "End of the dungeon");
+                        //deinitialization();
+                    }
                 }else{
                     showMessageDialog("You can only move one tile at a tile.", "Invalid tile");
                 }
@@ -287,6 +302,19 @@ final public class GUI extends JFrame implements ActionListener{
 
         }
         update();
+    }
+    //TODO end the game after there are no enemies at the [end of the map]
+    // Do at the end of the game
+    //
+    public void deinitialization(){
+        String message;
+        if (game.isTeamDead()){
+            message = "GAVE OVER\n";
+        }else{
+            message = "WELL DONE!!!\nYOU HAVE SUCCESSFULLY ESCAPED THE DUNGEON\nNOT MANY HAVE DONE THAT\n";
+        }
+        showMessageDialog(message, "End of the game");
+        System.exit(0);
     }
 
     public void setSelectedCharacterToFirst(){
