@@ -1,4 +1,6 @@
-public class Buff {
+import java.io.Serializable;
+
+public class Buff implements Serializable{
     //List<Buff> ints = new ArrayList<Buff>();
 
     private String name;
@@ -10,6 +12,8 @@ public class Buff {
     private int defenceEffect; 
     private int duration;   // (rounds)
     private boolean isFriendly; // determines if you want to use it on your allis
+
+    private static final long serialVersionUID = 1L;
 
     public Buff(String name, String description, int healthEffect,int damageEffect,
     int agilityEffect,int defenceEffect,int duration, boolean isFriendly){

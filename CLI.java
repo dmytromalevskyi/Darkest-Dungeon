@@ -5,8 +5,11 @@ final public class CLI{
     Game game;
 
     public CLI(int sizeOfTheMap){
-    this.game = new Game(sizeOfTheMap);
+        this.game = new Game(sizeOfTheMap);
+    }
 
+    public CLI(Game gameToPlay){
+        this.game = gameToPlay;
     }
 
     public void run() {

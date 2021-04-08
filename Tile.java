@@ -1,10 +1,13 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
-public class Tile {
+public class Tile implements Serializable{
     private boolean isPath = false;
     private List<Character> enemies = new ArrayList<>();
-    
+
+    private static final long serialVersionUID = 1L;
+
     public Tile(boolean isPath){
         this.isPath = isPath;
     }

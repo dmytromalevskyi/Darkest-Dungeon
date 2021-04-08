@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -38,5 +42,28 @@ class HelperClass {
     //
     public static int getRandomNumber(int min, int max) {
         return (int) ((Math.random() * (max + 1 - min)) + min);
+    }
+
+    // Return list of all files with a given extention (without ".")
+    //
+    public static String[] findFilesWithExt(String ext){
+        ArrayList<String> fileNames = new ArrayList<>();
+
+        try {
+            File folder = Paths.get(".").toFile();
+            File filesList[] = folder.listFiles();
+            
+            for(File file : filesList) {
+                if(file.isFile() && file.getName().contains("."+ext)){
+                    System.out.println("File name: "+file.getName());
+                    fileNames.add(file.getName());
+                }
+            }
+        } catch (Exception e){
+            System.out.println("Exception "+ e + " occured when trying to find files with particular extention.");
+            System.exit(0);
+        }
+        
+        return fileNames.toArray(new String[0]);
     }
 }

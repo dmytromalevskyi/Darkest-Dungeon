@@ -43,8 +43,17 @@ final public class GUI extends JFrame implements ActionListener{
     final Color pathTileColour = Color.GREEN;
     final Color notPathTileColour = null;
 
+    public GUI(Game gameToPlay){
+        this.game = gameToPlay;
+        this.initialiseGUI();
+    }
+
     public GUI(int sizeOfTheMap){
         this.game = new Game(sizeOfTheMap);
+        this.initialiseGUI();
+    }
+
+    public void initialiseGUI(){
         selectedCharacter = game.getPlayersTeam().get(selectedCharacterIndex);
         setTitle("Game");
         setSize(1200,600);
@@ -108,6 +117,9 @@ final public class GUI extends JFrame implements ActionListener{
         ///pack();
         update();        
         update();
+
+        game.makeLocalCopy("firstSave");
+        HelperClass.findFilesWithExt("ser");
     }
 
     public void update() {

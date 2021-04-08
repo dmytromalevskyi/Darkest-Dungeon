@@ -1,7 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
-public class Character {
+public class Character implements Serializable{
     //private String name;
     private String className;
     private int health;
@@ -11,6 +12,7 @@ public class Character {
     private int cooldown; //cooldown till next ability can be applied 
     private List<Buff> buffs = new ArrayList<>();
 
+    private static final long serialVersionUID = 1L;
 
     public Character(String className, int health, int damage, int agility, int defence) {
         this.className = className;

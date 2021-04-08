@@ -1,5 +1,7 @@
-public final class TemporaryItem extends Item{
+public final class TemporaryItem extends Item {
     private Buff temporaryEffect;
+    
+    private static final long serialVersionUID = 1L;
     
     public TemporaryItem(String name, String description, int numberOf, boolean isFriendly, Buff temporaryEffect){
         super(name, description, numberOf, isFriendly);
