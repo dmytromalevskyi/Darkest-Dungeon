@@ -15,6 +15,13 @@ In development
 * Map with scattered items all over it (progressively explored)
 * More unique item
 
+Command-line arguments
+-------------------------
+```text
+-g	use graphical user interface
+-l	use command line based interface"
+-s	restore or delete a local save of the game
+```
 Example of a part of the game (GUI)
 -----------------------------------
 
