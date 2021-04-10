@@ -4,6 +4,10 @@ import java.util.List;
 final public class CLI{
     Game game;
 
+    public CLI(){
+        this.game = new Game();
+    }
+
     public CLI(int sizeOfTheMap){
         this.game = new Game(sizeOfTheMap);
     }

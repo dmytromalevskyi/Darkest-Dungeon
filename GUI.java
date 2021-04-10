@@ -52,6 +52,11 @@ final public class GUI extends JFrame implements ActionListener{
         this.initialise();
     }
 
+    public GUI(){
+        this.game = new Game();
+        this.initialise();
+    }
+
     public void initialise(){
         selectedCharacter = game.getPlayersTeam().get(selectedCharacterIndex);
         setTitle("Darkest Dungeon");
@@ -206,7 +211,7 @@ final public class GUI extends JFrame implements ActionListener{
 
         playersTeamJPanel.removeAll();
         playersTeamJPanel.setLayout(new GridLayout(1,playersTeam.size(),10,10)); // playersTeam PANEL      
-        for (int i = 0; i < playersTeam.size(); i++) {
+        for (int i = playersTeam.size()-1; i >= 0; i--) {
             Character character = game.getPlayersTeam().get(i);
             JLabel characterLabel = new JLabel(convertToMultiline("["+(i+1)+"] " + character.toString()));
             if (character.hasAnyBuffs()){

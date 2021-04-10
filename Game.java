@@ -22,9 +22,9 @@ final public class Game implements Serializable{
         String inputString = args[0];
         if (inputString.equals("-g")){
             System.out.println("Starting graphical user interface...");
-            GUI gui = new GUI(10);
+            GUI gui = new GUI();
         }else if (inputString.equals("-l")){
-            CLI cli = new CLI(10);
+            CLI cli = new CLI();
             cli.run();
         }else if (inputString.equals("-s")){
             String savedGame = CLI.chooseLocalCopy();
@@ -51,17 +51,43 @@ final public class Game implements Serializable{
         }
     }
 
-
-    public Game(int sizeOfTheMap) {
-        this.map = new Map(sizeOfTheMap);
+    // Non-procedurally generated map
+    //
+    public Game() {
+        this.map = new Map(10);
+        createInventory();
 
         List<Character> playersTeam = new ArrayList<>();    // ALLY
-        playersTeam.add(new Paladin(90, 0.25));
-        playersTeam.add(new Thief(60, 0.15));
-        playersTeam.add(new Preacher(60));
+        playersTeam.add(new Paladin(80, 0.25));
+        playersTeam.add(new Thief(55, 0.15));
+        playersTeam.add(new Thief(50, 0.2));
+        playersTeam.add(new Preacher(55));
         setPlayersTeam(playersTeam);
 
-        createInventory();
+        List<Character> enemies1 = new ArrayList<>();    // ENEMY group 1
+        enemies1.add(new Thief(35, 0.15));
+        enemies1.add(new Preacher(45));
+        map.getTile(new int[]{5,2}).setEnemies(enemies1);
+
+        List<Character> enemies2 = new ArrayList<>();    // ENEMY group 2
+        enemies2.add(new Paladin(60, 0.2));
+        enemies2.add(new Thief(35, 0.15));
+        enemies2.add(new Thief(20, 0.15));
+        map.getTile(new int[]{5,5}).setEnemies(enemies2);
+
+        List<Character> enemies3 = new ArrayList<>();    // ENEMY group 3
+        enemies3.add(new Preacher(30));
+        enemies3.add(new Preacher(30));
+        enemies3.add(new Preacher(30));
+        enemies3.add(new Preacher(30));
+        map.getTile(new int[]{5,8}).setEnemies(enemies3);
+    }
+
+    // Procedurally generated map
+    // TODO, still in development, make it non square
+    // 
+    public Game(int sizeOfTheMap) {
+        this.map = new Map(sizeOfTheMap);
     }
 
     public static void chooseInterface(Game gameToPlay){
@@ -78,10 +104,10 @@ final public class Game implements Serializable{
     }
     
     public void createInventory() {
-        this.inventory.add(     PermanentItem.getRedPotion(8, 4)        );
-        this.inventory.add(     PermanentItem.getNastyPoison(5, 2)      );
-        this.inventory.add(     TemporaryItem.getFishingNet(5, 3, 1)    );
-        this.inventory.add(     TemporaryItem.getHydroAcid(10, 3, 3)    );
+        this.inventory.add(     PermanentItem.getRedPotion(8, 6)        );
+        this.inventory.add(     PermanentItem.getNastyPoison(5, 4)      );
+        this.inventory.add(     TemporaryItem.getFishingNet(5, 3, 3)    );
+        this.inventory.add(     TemporaryItem.getHydroAcid(10, 3, 5)    );
     }
 
 
