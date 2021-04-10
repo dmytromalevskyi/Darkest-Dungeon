@@ -17,8 +17,8 @@ In development
 
 Example of a part of the game (GUI)
 -----------------------------------
-![alt text](https://github.com/dmytromalevskyi/Darkest-Dungeon/blob/main/Screenshots/screenshot1.png?raw=true)
-![alt text](https://github.com/dmytromalevskyi/Darkest-Dungeon/blob/main/Screenshots/screenshot2.png?raw=true)
+![Alt text](Screenshots/screenshot1.png?raw=true "Main window")
+![Alt text](Screenshots/screenshot2.png?raw=true "Information after attack")
 Example of a part of the game (CLI)
 -----------------------------------
 ```text
