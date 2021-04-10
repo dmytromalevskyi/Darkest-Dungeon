@@ -3,6 +3,8 @@ public final class PermanentItem extends Item{
     private int damageEffect;
     private int agilityEffect;
     private int defenceEffect;
+
+    private static final long serialVersionUID = 1L;
     
     public PermanentItem(String name, String description, int numberOf, boolean isFriendly, int healthEffect, int damageEffect, int agilityEffect, int defenceEffect){
         super(name, description, numberOf, isFriendly);

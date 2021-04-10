@@ -1,9 +1,13 @@
-public class Item{
+import java.io.Serializable;
+
+public class Item implements Serializable{
     private String name;
     private String description;
     private int numberOf;
     private boolean isFriendly;
     
+    private static final long serialVersionUID = 1L;
+
     public Item(String name, String description, int numberOf, boolean isFriendly){
         this.name = name;
         this.description = description;

@@ -5,21 +5,18 @@ final public class CLI{
     Game game;
 
     public CLI(int sizeOfTheMap){
-    this.game = new Game(sizeOfTheMap);
+        this.game = new Game(sizeOfTheMap);
+    }
 
+    public CLI(Game gameToPlay){
+        this.game = gameToPlay;
     }
 
     public void run() {
-        List<Character> enemies = new ArrayList<>();    // ENEMY ON NEXT TILE
-        enemies.add(new Paladin(100, 0.2)); //100
-        enemies.add(new Thief(55, 0.15));   //55
-        enemies.add(new Preacher(70));      //70 
-        game.getMap().getTile(new int[]{
-            game.getMap().getCurrentCoordinateX(),
-            game.getMap().getCurrentCoordinateY()+1
-        }).setEnemies(enemies);
-
-        while (!game.isTeamDead() && !game.isEndOfTheMap()) {
+        while (!game.isEndOfTheMap() && !game.areEnemiesPresentHere()) {
+            if (game.isTeamDead()){
+                break;
+            }
             game.getMap().draw();
             printCurrentCoordinates();
             this.fight();
@@ -77,8 +74,8 @@ final public class CLI{
                 String cooldowString = (currentCharacter.isCooldownZero()) ? "" : " (cooldown: "+String.valueOf(currentCharacter.getCooldown())+" round/s)";
                 while (true) { // single character loop                    
                     int userInput = HelperClass.inputInt(
-                            "Enter a number for what you want to do: [1] Basic attack, [2] Special ability"+cooldowString+", [3] Open Inventory, [4] Skip: ",
-                            1, 4);
+                            "Enter a number for what you want to do: [1] Basic attack, [2] Special ability"+cooldowString+", [3] Open Inventory, [4] Skip, [5] Save progress: ",
+                            1, 5);
                     if (userInput == 1) { // basic attack
                         userInput = HelperClass.inputInt("Enter a number for the enemy you want to attack (0 to cancel): ", 0, game.getMap().getCurrentEnemies().size());
                         if (userInput == 0) continue;
@@ -134,6 +131,17 @@ final public class CLI{
                         }
                     } else if (userInput == 4) { // Skipp turn
                         System.out.println("Turn skipped.");
+                    } else if (userInput == 5) { // Make a local copy
+                        System.out.println(Game.listLocalCopies());
+                        String nameOfSave = HelperClass.inputString("Enter the name of the save you want to make.\nEnter the same name to override a save or just press enter to cancel: ");
+                        if(nameOfSave.isEmpty()){
+                            System.out.println("Saving canceled.");
+                        }else{
+                            game.makeLocalCopy(nameOfSave.trim());
+                            System.out.println("The game is saved successfully!");
+                            System.out.println(Game.listLocalCopies());
+                        }
+                        i--; // Make sure the turn of the character is not wasted
                     }
 
                     game.removeDead();
@@ -167,6 +175,25 @@ final public class CLI{
             System.out.println("NOT MANY HAVE DONE THAT");
         }
         System.out.println("++++++++++++++++++++++++++++++++++++++++");  
+    }
+
+    // Choose local copy
+    //
+    public static String chooseLocalCopy(){
+        if (!Game.areLocalCopiesPresent()){
+            System.out.println("There no local saves.");
+            System.exit(0);
+            return null;
+        }else{
+            String[] localCopies = HelperClass.findFilesWithExt("ser");
+            System.out.println(Game.listLocalCopies());
+            int numOfSave = HelperClass.inputInt("Enter the number of the save you want to choose (0 to cancel): ", 0, localCopies.length);
+            
+            if (numOfSave == 0)     System.exit(0);
+
+            String wantedSave = localCopies[numOfSave-1];
+            return wantedSave;
+        }
     }
     
 

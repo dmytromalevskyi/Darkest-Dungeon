@@ -1,9 +1,12 @@
 import java.util.List;
+import java.io.Serializable;
 
-public final class Map {
+public final class Map implements Serializable{
     private Tile[][] tiles;
     private int[] currentCoordinates = new int[2];
     private int[] endOfTheMap = new int[2];
+
+    private static final long serialVersionUID = 1L;
 
     public Map(int sizeOfTheMap){
         this.tiles = new Tile[sizeOfTheMap][sizeOfTheMap];

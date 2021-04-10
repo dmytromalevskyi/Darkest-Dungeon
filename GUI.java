@@ -2,11 +2,7 @@ import java.awt.Color;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -14,10 +10,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.ToolTipManager;
+import javax.swing.border.EmptyBorder;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Arrays;
 
 final public class GUI extends JFrame implements ActionListener{
@@ -27,6 +22,9 @@ final public class GUI extends JFrame implements ActionListener{
 
 
     // // // Panels // // //
+    JPanel topJPanel = new JPanel();
+        JButton saveButton;
+        JTextArea infoTextArea;
     JPanel fightJPanel = new JPanel();
         JPanel playersTeamJPanel = new JPanel();
         JPanel currentEnemiesJPanel = new JPanel();
@@ -41,33 +39,58 @@ final public class GUI extends JFrame implements ActionListener{
     // // // Constants // // //
     // Map colours
     final Color currentTileColour = Color.RED;
-    final Color pathTileColour = Color.GREEN;
+    final Color pathTileColour = new Color(125,225,130);
     final Color notPathTileColour = null;
+
+    public GUI(Game gameToPlay){
+        this.game = gameToPlay;
+        this.initialise();
+    }
 
     public GUI(int sizeOfTheMap){
         this.game = new Game(sizeOfTheMap);
+        this.initialise();
+    }
+
+    public void initialise(){
         selectedCharacter = game.getPlayersTeam().get(selectedCharacterIndex);
-        setTitle("Game");
+        setTitle("Darkest Dungeon");
         setSize(1200,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         ToolTipManager.sharedInstance().setInitialDelay(60);
 
-        fightJPanel.setBackground(Color.cyan);
-        abilitiesJPanel.setBackground(Color.BLUE);
-        statsJPanel.setBackground(Color.GRAY);
-        inventoryJPanel.setBackground(Color.MAGENTA);
-        mapJPanel.setBackground(Color.PINK);
+        fightJPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+            playersTeamJPanel.setBorder(new EmptyBorder(10,30,10,30));
+            currentEnemiesJPanel.setBorder(new EmptyBorder(10,30,10,30));
+        abilitiesJPanel.setBackground(new Color(185,218,170));
+        abilitiesJPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        statsJPanel.setBackground(new Color(170,214,218));
+        statsJPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        inventoryJPanel.setBackground(new Color(218,210,170));
+        inventoryJPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        mapJPanel.setBackground(new Color(218,170,170));
+        mapJPanel.setBorder(new EmptyBorder(10, 10, 0, 10));
+
+        JPanel topJPanel = new JPanel(); // NORTH PANEL
+        topJPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        saveButton = new JButton("Save"); saveButton.setFocusable(false); saveButton.addActionListener(this);
+        topJPanel.add(saveButton);
+        infoTextArea = new JTextArea("Hover over characters and items to see more info.");
+        infoTextArea.setEditable(false);
+        infoTextArea.setOpaque(false);
+        topJPanel.add(infoTextArea);
+
 
         JPanel fightJPanel = new JPanel(); // CENTER PANEL - FIGHT PANEL
-        fightJPanel.setLayout(new GridLayout(1,2,10,10)); 
-        playersTeamJPanel.setBackground(Color.BLUE);
+        fightJPanel.setLayout(new GridLayout(1,2,8,8)); 
+        playersTeamJPanel.setBackground(Color.LIGHT_GRAY);
         fightJPanel.add(playersTeamJPanel);
-        currentEnemiesJPanel.setBackground(Color.GRAY);
+        currentEnemiesJPanel.setBackground(Color.LIGHT_GRAY);
         fightJPanel.add(currentEnemiesJPanel);
 
         JPanel southJPanel = new JPanel(); // SOUTH PANEL
-        southJPanel.setLayout(new GridLayout(1,4,5,5));
+        southJPanel.setLayout(new GridLayout(1,4,0,0));
         southJPanel.add(abilitiesJPanel);
         southJPanel.add(statsJPanel);
         southJPanel.add(inventoryJPanel);
@@ -78,7 +101,7 @@ final public class GUI extends JFrame implements ActionListener{
         attackButton.setFocusable(false); attackButton.addActionListener(this);
         useAbilityButton = new JButton("Ability"); useAbilityButton.setFocusable(false); useAbilityButton.addActionListener(this);
         JButton skipButton = new JButton("Skip"); skipButton.setFocusable(false); skipButton.addActionListener(this);
-        abilitiesJPanel.setLayout(new GridLayout(3,1,1,1));
+        abilitiesJPanel.setLayout(new GridLayout(3,1,5,5));
         abilitiesJPanel.add(attackButton);
         abilitiesJPanel.add(useAbilityButton);
         abilitiesJPanel.add(skipButton);
@@ -95,15 +118,9 @@ final public class GUI extends JFrame implements ActionListener{
         game.getMap().getMaxCoordinateY()+1, 5,5));
         updateMapPanel();
 
+        add(topJPanel, BorderLayout.NORTH);
         add(fightJPanel, BorderLayout.CENTER);
         add(southJPanel, BorderLayout.SOUTH);
-
-        // Adding enemies
-        List<Character> enemies = new ArrayList<>();    // ENEMY
-        enemies.add(new Paladin(0, 0.2));
-        enemies.add(new Thief(0, 0.15));
-        enemies.add(new Preacher(0));           
-        game.getMap().getCurrentTile().setEnemies(enemies);
 
         setVisible(true);
         ///pack();
@@ -117,7 +134,10 @@ final public class GUI extends JFrame implements ActionListener{
         updateStatsPanel(); //update display of stats of the selected char.
         updateInvintoryPanel(); // update invintory panel
         updateMapPanel(); // update map panel
-        
+
+        if (game.isTeamDead() || (game.isEndOfTheMap() && !game.areEnemiesPresentHere()))
+            deinitialization(); // End the game
+
         //change the length of the frame to refresh it (a bug that makes some elements not visible)
         this.setSize(getWidth()-1, getHeight()-1);
         this.setSize(getWidth()+1, getHeight()+1);
@@ -176,7 +196,7 @@ final public class GUI extends JFrame implements ActionListener{
         if (selectedCharacter == null){
             statsTextArea.setText("No character is selected.");
         } else {
-            statsTextArea.setText(selectedCharacter.toString());
+            statsTextArea.setText("Selected Character ["+(selectedCharacterIndex+1)+"]\n"+selectedCharacter.toString());
         }
     }
 
@@ -290,16 +310,25 @@ final public class GUI extends JFrame implements ActionListener{
                     game.getMap().move(new int[]{coordinateX,coordinateY});
                     if(game.getMap().isEndOfTheMap()){
                         showMessageDialog("This tile leads to the exit of the dungeon!", "End of the dungeon");
-                        //deinitialization();
                     }
                 }else{
                     showMessageDialog("You can only move one tile at a tile.", "Invalid tile");
+                }
+            }else if(buttonActionCommand.contains("Save")){ // Save button
+                String nameOfSave = inputStringDialog(Game.listLocalCopies()+"\nEnter the name of the save you want to make.\nEnter the same name to override a save (don't include any extentions): ", "Saving the game");
+                if (nameOfSave == null){
+                    return;
+                } else if (nameOfSave.isEmpty()){
+                    showMessageDialog("Local copy was NOT created.\nName is required.", "Name is missing");
+                } else {
+                    game.makeLocalCopy(nameOfSave.trim());
+                    showMessageDialog("The game is saved successfully!\n"+Game.listLocalCopies(), "Game saved");
                 }
             } else { // OTHER buttons
                 System.out.println("The button is not handled in actionPerformed function.");
             }
         }else{ // Non-buttons
-
+            System.out.println("You are clicking on something that is not a button and is not handled in actionPerformed function.");
         }
         update();
     }
@@ -403,6 +432,13 @@ final public class GUI extends JFrame implements ActionListener{
 
     public static String convertToMultiline(String orig){
         return "<html>" + orig.replaceAll("\n", "<br>");
+    }
+
+    // Ask user to enter a string
+    //
+    public String inputStringDialog(String message, String title){
+        String input = (String)JOptionPane.showInputDialog(this,message,title,JOptionPane.PLAIN_MESSAGE,null,null,"");
+        return input;
     }
 
     // Ask user to choose an int from the int array
