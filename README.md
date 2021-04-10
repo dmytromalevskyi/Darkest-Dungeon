@@ -20,6 +20,7 @@ Example of a part of the game (GUI)
 
 ![Alt text](Screenshots/screenshot1.PNG?raw=true "Main window")
 ![Alt text](Screenshots/screenshot2.PNG?raw=true "Information after attack")
+
 Example of a part of the game (CLI)
 -----------------------------------
 ```text
