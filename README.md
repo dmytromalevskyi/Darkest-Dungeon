@@ -15,8 +15,21 @@ In development
 * Map with scattered items all over it (progressively explored)
 * More unique item
 
-Example of a part of the game
------------------------------
+Command-line arguments
+-------------------------
+```text
+-g	use graphical user interface
+-l	use command line based interface
+-s	restore or delete a local save of the game
+```
+Example of a part of the game (GUI)
+-----------------------------------
+
+![Alt text](Screenshots/screenshot1.PNG?raw=true "Main window")
+![Alt text](Screenshots/screenshot2.PNG?raw=true "Information after attack")
+
+Example of a part of the game (CLI)
+-----------------------------------
 ```text
 <<<<<<<<<<<<<<<<<<<<<<<< Your Turn >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ========== Current Character (Paladin) [1] ==========
