@@ -17,7 +17,7 @@ final public class CLI{
     }
 
     public void run() {
-        while (!game.isEndOfTheMap() && !game.areEnemiesPresentHere()) {
+        while (!game.isEndOfTheMap()) {
             if (game.isTeamDead()){
                 break;
             }
