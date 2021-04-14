@@ -414,4 +414,15 @@ final public class CLI{
         }
         
     }
+
+    // Tutorial at the start of the GUI
+    //
+    public static void showTutorial(){
+        System.out.println("Welcome to Darkest Dungeon!\n\nYour goal is to find the end of the dungeon and escape it alive.");
+        System.out.println("Each character has different set of stats.\n\nHealth: how much more damage can be taken.\n\nDamage: maximum possible damage per attack.\n\nAgility: ranges between 0 and 10, used to calculate chance of missing an attack.\nChance of missing: ((victim's agility) - (attacker's agility)) * 0.05\n\nDefence: determines damage taken.\nDamage taken: (attacker's damage) - (victim's defence)");
+        System.out.println("There are a few classes in the game each having their own role.\n\nPaladin: a lot of health and defence, ability to give defence for 4 rounds, chance to fully block an attack.\nThief: a lot of damage and agility, ability to give agility for 3 rounds, has chance to attack back when attacked.\nPreacher: medium stats, ability to give damage for 1 round, has no passive perks.");
+        System.out.println("Map:\nRed tile shows you where you are.\nGrean tiles show the path.\n\nFind the tile that is the exit of the dungeon");
+        System.out.println("Tips:\nNotice that abilities depend on the health.\nTo manage local saves use -s command.");
+        System.out.println("Thank you for playing!\nFor any feedback, bugs fixes or contributions visit: https://github.com/dmytromalevskyi/Darkest-Dungeon");
+    }
 }

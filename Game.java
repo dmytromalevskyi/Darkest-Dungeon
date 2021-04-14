@@ -46,6 +46,9 @@ final public class Game implements Serializable{
             System.out.println("-g\tuse graphical user interface");
             System.out.println("-l\tuse command line based interface");
             System.out.println("-s\trestore or delete a local save of the game");
+            System.out.println("-t\tshow tutorial");
+        }else if (inputString.equals("-t")){
+            CLI.showTutorial();
         }else{
             System.out.println("Unrecognised command (use -h for help)");
         }

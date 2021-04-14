@@ -38,6 +38,13 @@
             "request": "launch",
             "mainClass": "Game",
             "args": "-s"
+        },
+        {
+            "type": "java",
+            "name": "Launch Tutorial",
+            "request": "launch",
+            "mainClass": "Game",
+            "args": "-t"
         }
     ]
 }

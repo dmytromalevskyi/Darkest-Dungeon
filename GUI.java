@@ -24,6 +24,7 @@ final public class GUI extends JFrame implements ActionListener{
     // // // Panels // // //
     JPanel topJPanel = new JPanel();
         JButton saveButton;
+        JButton tutorialButton;
         JTextArea infoTextArea;
     JPanel fightJPanel = new JPanel();
         JPanel playersTeamJPanel = new JPanel();
@@ -81,6 +82,8 @@ final public class GUI extends JFrame implements ActionListener{
         topJPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         saveButton = new JButton("Save"); saveButton.setFocusable(false); saveButton.addActionListener(this);
         topJPanel.add(saveButton);
+        tutorialButton = new JButton("Tutorial"); tutorialButton.setFocusable(false); tutorialButton.addActionListener(this);
+        topJPanel.add(tutorialButton);
         infoTextArea = new JTextArea("Hover over characters and items to see more info.");
         infoTextArea.setEditable(false);
         infoTextArea.setOpaque(false);
@@ -329,6 +332,8 @@ final public class GUI extends JFrame implements ActionListener{
                     game.makeLocalCopy(nameOfSave.trim());
                     showMessageDialog("The game is saved successfully!\n"+Game.listLocalCopies(), "Game saved");
                 }
+            } else if (buttonActionCommand.contains("Tutorial")) {
+                showTutorial();
             } else { // OTHER buttons
                 System.out.println("The button is not handled in actionPerformed function.");
             }
@@ -482,5 +487,16 @@ final public class GUI extends JFrame implements ActionListener{
 
     public void showMessageDialog(String message, String title){
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.DEFAULT_OPTION);
+    }
+
+    // Tutorial at the start of the GUI
+    //
+    public void showTutorial(){
+        showMessageDialog("Welcome to Darkest Dungeon!\n\nYour goal is to find the end of the dungeon and escape it alive.","Tutorial");
+        showMessageDialog("Each character has different set of stats.\n\nHealth: how much more damage can be taken.\n\nDamage: maximum possible damage per attack.\n\nAgility: ranges between 0 and 10, used to calculate chance of missing an attack.\nChance of missing: ((victim's agility) - (attacker's agility)) * 0.05\n\nDefence: determines damage taken.\nDamage taken: (attacker's damage) - (victim's defence)", "Tutorial");
+        showMessageDialog("There are a few classes in the game each having their own role.\n\nPaladin: a lot of health and defence, ability to give defence for 4 rounds, chance to fully block an attack.\nThief: a lot of damage and agility, ability to give agility for 3 rounds, has chance to attack back when attacked.\nPreacher: medium stats, ability to give damage for 1 round, has no passive perks.","Tutorial");
+        showMessageDialog("Map:\nRed tile shows you where you are.\nGrean tiles show the path.\n\nFind the tile that is the exit of the dungeon.", "Tutorial");
+        showMessageDialog("Tips:\nTo manage local saves use -s command.\nNotice that abilities depend on the health.\nHover your mouse over items to see what they do.\nHover your mouse over characters to see their buffs and cooldowns.","Tutorial");
+        showMessageDialog("Thank you for playing!\nFor any feedback, bugs fixes or contributions visit: https://github.com/dmytromalevskyi/Darkest-Dungeon", "Tutorial");
     }
 }
