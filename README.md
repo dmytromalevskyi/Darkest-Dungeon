@@ -6,7 +6,7 @@ Features
 * 3 different classes each with a unique ability
 * Most classes have a unique passive ability
 * Inventory with items that give permanent or time limited effect (4 items currently in the game)
-* Saving the game and have a choice to carry on either CLI or GUI
+* Saving the game and have a choice to carry on either in CLI or GUI
 
 
 In development
