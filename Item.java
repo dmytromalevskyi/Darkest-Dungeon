@@ -1,6 +1,6 @@
 import java.io.Serializable;
 
-public class Item implements Serializable{
+abstract public class Item implements Serializable{
     private String name;
     private String description;
     private int numberOf;
