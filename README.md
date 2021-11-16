@@ -7,6 +7,7 @@ Features
 * Most classes have a unique passive ability
 * Inventory with items that give permanent or time limited effect (4 items currently in the game)
 * Saving the game and have a choice to carry on either in CLI or GUI
+* Short tutorial on abilities and mechanics of the game
 
 
 In development
@@ -21,6 +22,7 @@ Command-line arguments
 -g	use graphical user interface
 -l	use command line based interface
 -s	restore or delete a local save of the game
+-t	show tutorial
 ```
 Example of a part of the game (GUI)
 -----------------------------------
