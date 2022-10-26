@@ -1,5 +1,5 @@
 # Darkest-Dungeon
-Oversimplified version of the game Darkest Dungeon that was written for my university course to learn about OOP and polymorphism. It is a turn base game where the player needs to explore the map and fight off enemies to get to the end of the dungeon. The game can be enjoyed on a terminal and in a GUI.
+Simplified version of the game Darkest Dungeon that was written for my university course to learn about OOP and polymorphism. It is a turn base game where the player needs to explore the map and fight off enemies to get to the end of the dungeon. The game can be enjoyed on a terminal and in a GUI.
 
 Features
 -------------------------
